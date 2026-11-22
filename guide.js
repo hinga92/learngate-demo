@@ -1,6 +1,6 @@
 /* In-app User guide + About (Grown-ups area). */
 'use strict';
-const APP_VERSION = '2.4';
+const APP_VERSION = '2.5';
 const APP_DATE = 'November 2026';
 const APP_DEVELOPER = 'the Learning Gate team';
 const MASCOT = () => (typeof S !== 'undefined' && S.mascotName) || 'Gigi';
@@ -86,12 +86,14 @@ const GUIDE = [
     <p>Every Sunday at 5 pm, three separate emails go to the family: learning days, questions, trophies, real books (with authors), play earned, <b>🌙 bedtime stories</b>, <b>📖 reading &amp; sight words</b> (books, new words learned, tricky words) and <b>📈 levels</b> (moved up, easier for now, finding it hard).</p>
     <p><b>One progress on every device:</b> the tablet and iPad share stars, trophies, levels, sight words, story books, real books, bedtime nights and settings through the Sheet. They catch up when the app opens and after every activity; both devices need internet.</p>`],
   ['Sharing with a teacher (demo edition)', `
-    <p>A <b>demo edition</b> can be shared with teachers and reviewers. It has a made-up child ("Ava") with sample progress, no family names, numbers or links, and no syncing. It runs in a web browser and nothing done in it is sent anywhere. The grown-ups PIN in the demo is 1234.</p>
-    <ul><li><b>The link:</b> the private <b>Learning Gate Demo</b> page in your Claude artifacts. Share it with the person from that page's <b>Share</b> menu.</li>
-    <li><b>After changing the app,</b> rebuild the demo on the Mac, then ask Claude to republish it (same link):</li></ul>
-    <pre>cd ~/Automation-Projects/LearnGate && python3 tools/build_demo.py</pre>
-    <ul><li>The build stops if any family detail would end up in the demo.</li>
-    <li>The demo can't lock a tablet, check reading with the microphone, make calls or show the parent dashboard; those need the installed app.</li></ul>`],
+    <p>A <b>demo edition</b> can be shared with teachers and reviewers. It has a made-up child ("Ava") with sample progress, no family names, numbers or links, no real names, and no syncing. It runs in any web browser, needs no account, and nothing done in it is sent anywhere. The grown-ups PIN in the demo is 1234.</p>
+    <ul><li><b>The link to send:</b> <b>this website</b> (a free public website on GitHub Pages; anyone with the link can open it).</li>
+    <li><b>Reading aloud</b> works there too: allow the microphone when asked (best in Safari or Chrome).</li>
+    <li><b>After changing the app,</b> update the demo website from the Mac (it rebuilds, checks and publishes; live in about a minute):</li></ul>
+    <pre>cd ~/Automation-Projects/LearnGate && bash tools/publish_demo.sh</pre>
+    <ul><li>It stops if any family detail would end up in the demo. Only the demo goes to the public website; the real app stays in the private backup.</li>
+    <li>There is also a private copy on your Claude page ("Learning Gate Demo"), which only people with a Claude account you share it with can open.</li>
+    <li>The demo can't lock a tablet, make calls or show the parent dashboard; those need the installed app.</li></ul>`],
   ['Backup', `
     <ul><li>The whole project is backed up to the private GitHub repository <b>LearnGate</b> every 10 minutes when something changed (a background job on the Mac). The Sheet password is never sent there.</li>
     <li>Log on the Mac: <b>~/Library/Logs/learngate-backup.log</b>. Pause and resume commands are in the project's README.</li></ul>`],
