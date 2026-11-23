@@ -42,8 +42,11 @@
     '.demobadge button{font:inherit;border:0;border-radius:999px;padding:4px 10px;background:#fff3;color:#fff;cursor:pointer}';
   document.head.appendChild(css);
   const b = document.createElement('div'); b.className = 'demobadge';
-  b.innerHTML = '🧪 Demo · Grown-ups PIN <b>1234</b><button id="demoReset" title="Start the demo over">↺ Reset</button>';
+  b.innerHTML = '🧪 Demo · PIN <b>1234</b><button id="demoGU" class="gu" title="Open the parent section">🔑 Grown-ups</button><button id="demoReset" title="Start the demo over">↺ Reset</button>';
   document.body.appendChild(b);
+  // One tap to the parent section (same PIN check as holding ⚙), easy to find on a phone.
+  b.querySelector('#demoGU').onclick = () => { if (onScreen() === 'parent') return; openParent(false); };
+  css.textContent += '.demobadge button.gu{background:#f2c94c;color:#3b2a00;font-weight:700}@media (max-width:480px){.demobadge{font-size:13px;gap:6px;padding:5px 6px 5px 10px}}';
   const rb = b.querySelector('#demoReset'); let armed = 0;
   rb.onclick = () => { if (Date.now() - armed > 4000) { armed = Date.now(); rb.textContent = 'Tap again to reset'; setTimeout(() => { rb.textContent = '↺ Reset'; }, 4000); return; }
     try { localStorage.clear(); } catch (e) {} location.reload(); };
@@ -63,7 +66,7 @@
   // a first guide topic that explains the demo
   if (typeof GUIDE !== 'undefined') GUIDE.unshift(['🧪 About this demo', `
     <p>This is a <b>demo edition</b> for teachers and reviewers. "Ava" is a made-up child with sample progress. Nothing you do here leaves this browser, and nothing is sent anywhere.</p>
-    <ul><li><b>Grown-ups:</b> hold ⚙ (top-right of home) for about 1 second, PIN <b>1234</b>.</li>
+    <ul><li><b>Grown-ups:</b> tap <b>🔑 Grown-ups</b> in the dark badge at the bottom-right (or hold ⚙ at the top-right for about 1 second), PIN <b>1234</b>.</li>
     <li><b>Try:</b> 🚀 Let's learn, 📖 Gigi's Stories, 🌙 Bedtime story (open any time in the demo), 📚 I read a book, 🏆 Challenges, and the Grown-ups cards (📖 sight words, 📈 levels).</li>
     <li><b>Turn the sound on:</b> Gigi reads the questions and stories aloud.</li>
     <li><b>Reading aloud:</b> on the website, allow the microphone when asked and Gigi checks each word (works best in Safari or Chrome). Where the microphone isn't available, Ava taps "✅ I read it!" instead.</li>
