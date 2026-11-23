@@ -41,6 +41,30 @@ const libNextUp = () => libSeries().map(s => s.books.find(b => statusRank(lstate
       document.querySelectorAll('.bkchip').forEach(x => x.classList.toggle('on', x === c)); const f = $('#bkNewForm'); if (f) f.style.display = 'none'; Bridge.speak(b.title); });
   } catch (e) { console.error(e); } return r; }; })();
 
+// ---- 1b. A reading timer nobody checked: pick the book afterwards, start over, and clear very old ones ----
+(() => { const prev = renderBook; renderBook = function () {
+  const b = P.bookTimer;
+  if (b && Date.now() - b.start - (b.pausedMs || 0) > 12 * 3600e3) { P.bookTimer = null; saveAll(); }   // forgotten (12 h+): never earns play time
+  const clock = $('#bkClock'), bar = document.querySelector('#book .bkbar'); if (clock) clock.style.display = ''; if (bar) bar.style.display = '';   // shown again for a new timer
+  return prev.apply(this, arguments); }; })();
+(() => { const prev = bookDone; bookDone = function () {
+  const r = prev.apply(this, arguments);
+  try {
+    const clock = $('#bkClock'), bar = document.querySelector('#book .bkbar'); if (clock) clock.style.display = 'none'; if (bar) bar.style.display = 'none';   // time is up: make room
+    const name = $('#bkName'), auth = $('#bkAuthor');
+    if (name && !name.value.trim()) {   // started without choosing a book: offer the shelves here
+      const picks = libNextUp().slice(0, 4).concat(bookShelf().slice(0, 3).map(x => ({title: x.title, author: x.author, recent: 1})));
+      const seen = new Set(), list = picks.filter(x => !seen.has(x.title) && seen.add(x.title));
+      if (list.length) { $('#bkExtra').insertAdjacentHTML('afterbegin', `<p class="bkq small">Which book was it?</p><div class="bkshelf">${list.map((x, i) =>
+        `<button class="bkchip ${x.recent ? '' : 'lib'}" data-pick="${i}">📗 ${esc(x.title)}${x.series ? `<small>${esc(x.series)}</small>` : x.author ? `<small>${esc(x.author)}</small>` : ''}</button>`).join('')}</div>`);
+        document.querySelectorAll('[data-pick]').forEach(c => c.onclick = () => { const x = list[+c.dataset.pick]; name.value = x.title; if (auth) auth.value = x.author || '';
+          document.querySelectorAll('[data-pick]').forEach(o => o.classList.toggle('on', o === c)); }); }
+    }
+    const btns = $('#bkBtns'); if (btns && !$('#bkOver')) { btns.insertAdjacentHTML('beforeend', '<button class="small-btn" id="bkOver">✖ Start over</button>');
+      $('#bkOver').onclick = () => { if ($('#bkOver').dataset.sure) { P.bookTimer = null; saveAll(); renderBook(); } else { $('#bkOver').dataset.sure = 1; $('#bkOver').textContent = 'Tap again: no play time'; } }; }
+  } catch (e) { console.error(e); }
+  return r; }; })();
+
 // ---- 2. After a library book: who read it, talk about it, sound game ----
 (() => { const prev = finishBook; finishBook = function (title, author) {
   const r = prev.apply(this, arguments);

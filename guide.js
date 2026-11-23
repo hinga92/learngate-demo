@@ -1,6 +1,6 @@
 /* In-app User guide + About (Grown-ups area). */
 'use strict';
-const APP_VERSION = '2.6';
+const APP_VERSION = '2.7';
 const APP_DATE = 'November 2026';
 const APP_DEVELOPER = 'the Learning Gate team';
 const MASCOT = () => (typeof S !== 'undefined' && S.mascotName) || 'Gigi';
@@ -59,6 +59,7 @@ const GUIDE = [
     <ol><li><b>Which book?</b> Tap a book from her shelf (the last 8 books she read) or <b>＋ A new book</b> and type the title and author (a grown-up can help).</li>
     <li>The book shows under the clock while she reads. Pause and Stop are there.</li>
     <li>When time is up, check the title and author and confirm with the PIN.</li></ol>
+    <p><b>If nobody checked when the time was up,</b> the timer waits at 0:00 on that device. Tap <b>Which book was it?</b> to pick the book she read, then confirm; or tap <b>✖ Start over</b> (twice) to clear it without play time. Timers left for more than 12 hours are cleared by themselves. Each device keeps its own timer.</p>
     <p>She gets 3 stars and 15 minutes of play (unless the day's play is used up or it is rest time). The book is remembered for one-tap re-reads and shows with its author on the dashboard and in the Sunday email.</p>
     <p><b>Reading tutor</b> (read-aloud questions): <b>🔊 Listen first</b> highlights each word as it is spoken; tap any word to hear it; words turn green as she reads aloud.</p>`],
   ['🏠 Home library (our paper books)', `
