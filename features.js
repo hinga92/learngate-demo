@@ -271,13 +271,13 @@ function renderRemote(d, snaps) {
   box.querySelectorAll('[data-msg]').forEach(b => b.onclick = () => sendRemote({type: 'msg', text: b.dataset.msg, target: target()}));
   $('#rcSend').onclick = () => { const t = $('#rcText').value.trim(); if (t) sendRemote({type: 'msg', text: t.slice(0, 100), target: target()}); };
 }
-let rcPinAt = 0;
+let rcPinAt = 0, rcPin = '';   // the Sheet checks this PIN again before passing a command on
 function sendRemote(c) {
-  const go = () => fetch(S.syncUrl, {method: 'POST', mode: 'no-cors', headers: {'Content-Type': 'text/plain;charset=utf-8'}, body: JSON.stringify(Object.assign({key: S.syncKey, action: 'cmd'}, c))})
+  const go = () => fetch(S.syncUrl, {method: 'POST', mode: 'no-cors', headers: {'Content-Type': 'text/plain;charset=utf-8'}, body: JSON.stringify(Object.assign({key: S.syncKey, action: 'cmd', pin: rcPin}, c))})
     .then(() => { $('#rcNote').textContent = '✅ Sent! It reaches her device within about a minute. This page refreshes in a minute to confirm.'; setTimeout(() => { if (onScreen() === 'pview') renderParentView(); }, 70000); })
     .catch(() => { $('#rcNote').textContent = 'Could not send. Check the internet connection.'; });
   if (Date.now() - rcPinAt < 10 * 60000) return go();
-  askPin(ok => { if (ok) { rcPinAt = Date.now(); go(); } }, 'PIN to control her device');
+  askPin((ok, pin) => { if (ok) { rcPinAt = Date.now(); rcPin = pin; go(); } }, 'PIN to control her device');
 }
 
 // =====================================================================

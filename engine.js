@@ -90,7 +90,18 @@ const DEFAULT_SETTINGS = {
   bedtimeStart: '20:00', bedtimeEnd: '07:00', readAloud: true, readQuestions: true, volumeCapPct: 80, helpName: 'Dad', helpPhone: '', helpWhatsApp: true, alwaysWhatsApp: false, faceTimeId: '', faceTimeVideo: true,
   subjects: {math: true, reading: true, writing: true, science: true, art: true, social: true}
 };
-let S = Object.assign({}, DEFAULT_SETTINGS, Bridge.load('settings') || {});
+// Settings can arrive from her other device through the Sheet, so check them before use (defence in depth):
+// numbers must be numbers, yes/no must be yes/no, and text loses characters that could build HTML.
+function cleanSettings(o) {
+  const strip = v => String(v == null ? '' : v).replace(/[<>`"\u0000-\u001f]/g, '').slice(0, 300);
+  const clean = (v, d) => typeof d === 'number' ? (isFinite(+v) ? +v : d) : typeof d === 'boolean' ? !!v : typeof d === 'string' ? strip(v)
+    : Array.isArray(v) ? v.slice(0, 200).map(x => (x && typeof x === 'object') ? clean(x, {}) : typeof x === 'string' ? strip(x) : x)
+    : (v && typeof v === 'object') ? Object.fromEntries(Object.entries(v).slice(0, 200).map(([k, x]) => [strip(k), typeof x === 'string' ? strip(x) : typeof x === 'number' || typeof x === 'boolean' ? x : clean(x, {})])) : v;
+  Object.keys(o).forEach(k => { if (k === 'pin' || k === 'syncUrl' || k === 'syncKey') { o[k] = String(o[k] || '').replace(/[<>`"\s]/g, ''); return; }
+    const d = DEFAULT_SETTINGS[k]; o[k] = d === undefined ? (typeof o[k] === 'string' ? strip(o[k]) : (o[k] && typeof o[k] === 'object') ? clean(o[k], {}) : o[k]) : clean(o[k], d); });
+  return o;
+}
+let S = cleanSettings(Object.assign({}, DEFAULT_SETTINGS, Bridge.load('settings') || {}));
 S.subjects = Object.assign({}, DEFAULT_SETTINGS.subjects, S.subjects || {});
 if (!(S.volumeCapPct >= 10 && S.volumeCapPct <= 100)) S.volumeCapPct = 80;
 if (/^\d{4}$/.test(S.pin || '')) { S.pin = makePin(S.pin); Bridge.save('settings', S); }   // upgrade an old plain-text PIN
@@ -509,7 +520,7 @@ function askPin(cb, title = 'Grown-ups only') {
     if (k === '✕') { $('#pinModal').classList.remove('on'); return cb(false); }
     if (k === '⌫') v = v.slice(0, -1); else v += k; draw();
     if (locked()) { v = ''; $('#pinTitle').textContent = lockMsg(); draw(); return; }
-    if (v.length === 4) { if (pinOk(v)) { S.pinLock = {fails: 0, until: 0}; Bridge.save('settings', S); $('#pinModal').classList.remove('on'); cb(true); }
+    if (v.length === 4) { if (pinOk(v)) { S.pinLock = {fails: 0, until: 0}; Bridge.save('settings', S); $('#pinModal').classList.remove('on'); cb(true, v); }
       else { v = ''; const f = ++S.pinLock.fails; if (f >= 5) { S.pinLock.until = Date.now() + Math.min(15, Math.pow(2, f - 5)) * 60000; $('#pinTitle').textContent = lockMsg(); }
         Bridge.save('settings', S); d.classList.add('shake'); setTimeout(() => { d.classList.remove('shake'); draw(); }, 500); } } });
   $('#pinModal').classList.add('on');

@@ -1,6 +1,6 @@
 /* In-app User guide + About (Grown-ups area). */
 'use strict';
-const APP_VERSION = '2.7';
+const APP_VERSION = '2.8';
 const APP_DATE = 'November 2026';
 const APP_DEVELOPER = 'the Learning Gate team';
 const MASCOT = () => (typeof S !== 'undefined' && S.mascotName) || 'Gigi';
@@ -109,6 +109,11 @@ const GUIDE = [
     <li>Log on the Mac: <b>~/Library/Logs/learngate-backup.log</b>. Pause and resume commands are in the project's README.</li></ul>`],
   ['Safety and privacy', `
     <ul><li>No ads, no tracking, no outside analytics. Progress stays in the family Google account.</li>
+    <li>The Sheet only answers devices that know its password. Remote commands (unlock, lock, messages) also need a parent PIN, checked by the Sheet, with a lockout after 5 wrong tries. At most 8 devices can connect.</li>
+    <li>The Sunday email can only be sent on Sunday afternoon (once), and the test email only by you from the Apps Script editor, so nobody else can use the Sheet to send emails.</li>
+    <li>The app only runs its own code (a content security policy blocks anything injected), and settings shared between devices are checked before use.</li>
+    <li>A security test that attacks a local copy of the Sheet script can be run on the Mac at any time: <b>node tools/security_test.js</b>.</li>
+    <li>USB debugging lets anyone with a cable read the tablet's app data: keep it off except while installing updates.</li>
     <li>The app shows only its own pages; outside web pages are blocked.</li>
     <li>The PINs are stored scrambled, with a lockout after 5 wrong tries.</li>
     <li>Help always works. The app rewards and never punishes.</li>

@@ -57,7 +57,7 @@ function shareState() {
     if (remote.progress) P = mergeProgress(P, remote.progress, P.syncBase);
     if (remote.settings && (remote.settingsT || 0) > (S.settingsT || 0)) {   // newer Grown-ups settings from her other device
       const keep = {}; LOCAL_ONLY_S.forEach(k => keep[k] = S[k]);
-      S = Object.assign({}, DEFAULT_SETTINGS, remote.settings, keep, {settingsT: remote.settingsT});
+      S = cleanSettings(Object.assign({}, DEFAULT_SETTINGS, remote.settings, keep, {settingsT: remote.settingsT}));   // settings from the Sheet are checked before use
     }
     P.syncBase = counters(P);
     saveAll();
