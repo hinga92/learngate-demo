@@ -292,3 +292,10 @@ body.night,body.night #bedtime{background:#141a3a;color:#e8e4ff}
 @keyframes b-twinkle{0%,100%{opacity:.35}50%{opacity:1}}
 @keyframes b-glow{0%,100%{filter:drop-shadow(0 0 4px #ffe9a8)}50%{filter:drop-shadow(0 0 18px #ffe9a8)}}
 @keyframes b-drift{0%,100%{transform:translateX(-50%) translateY(0);opacity:.8}50%{transform:translateX(-30%) translateY(-14px);opacity:1}}
+/* home library */
+.bkq.small{font-size:18px;color:#8a7a62;margin:10px 0 4px}.bkchip.lib{background:#eef7ff}
+.libtalk{display:flex;flex-direction:column;align-items:center;gap:10px;max-width:900px;margin:0 auto}
+.libq{font-size:32px;font-weight:700;margin:6px 0}
+.libser{margin:12px 0 6px}.librow{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:3px 0;border-top:1px solid #f1e8d8}
+.libt{flex:1;min-width:180px}.libst{font-size:15px;padding:6px 12px}.libqrow{display:flex;gap:8px;flex-wrap:wrap;padding:4px 0 8px}.libqrow input{flex:1;min-width:200px}
+.libadd{margin-top:12px}.libadd summary{cursor:pointer;font-weight:700}

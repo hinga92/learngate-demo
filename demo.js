@@ -26,7 +26,7 @@
     ['play', 'we', 'like', 'to', 'come'].forEach(w => W(w, 2, 0, [day(1)]));
     ['said', 'they', 'here'].forEach(w => W(w, 1, 2, []));
     P.stories = {g1: {stars: 2, reads: 1, best: 90, last: ago(1, 18)}};
-    P.books = [{date: day(2), t: ago(2, 19), mins: 15, title: 'Pete the Cat', author: 'James Dean'}];
+    P.books = [{date: day(2), t: ago(2, 19), mins: 15, title: 'The Little Red Hen', author: ''}];
     P.bedtime = {nights: [day(2), day(1)], streak: 2, best: 2, count: 2};
     P.moodAsked = ''; P.usage = {};
     saveAll();

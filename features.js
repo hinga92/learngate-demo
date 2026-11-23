@@ -113,8 +113,8 @@ function bookDone() {
   $('#bkTitle').textContent = 'Time is up! 🎉'; $('#bkClock').textContent = '0:00'; $('#bkFill').style.width = '100%';
   $('#bkMsg').innerHTML = `You read for <b>${b.mins} minutes</b>. Wonderful!` + (S.bookPin ? '<br>Ask a grown-up to check.' : '');
   confetti(30); Bridge.speak(`Time is up! You read for ${b.mins} minutes. Wonderful reading!` + (S.bookPin ? ' Ask a grown-up to check.' : ''));
-  $('#bkExtra').innerHTML = `<div class="bkform"><label class="bktitle">Book title <input id="bkName" maxlength="60" value="${esc(b.title || '')}" placeholder="e.g. Pete the Cat"></label>
-    <label class="bktitle">Author <input id="bkAuthor" maxlength="60" value="${esc(b.author || '')}" placeholder="e.g. James Dean (optional)"></label></div>`;
+  $('#bkExtra').innerHTML = `<div class="bkform"><label class="bktitle">Book title <input id="bkName" maxlength="60" value="${esc(b.title || '')}" placeholder="e.g. The Little Red Hen"></label>
+    <label class="bktitle">Author <input id="bkAuthor" maxlength="60" value="${esc(b.author || '')}" placeholder="optional"></label></div>`;
   $('#bkBtns').innerHTML = `<button class="bigbtn" id="bkConfirm">${S.bookPin ? '👩 Grown-up check' : '✅ Done'}</button>`;
   $('#bkConfirm').onclick = () => { const title = ($('#bkName').value || '').trim().slice(0, 60), author = ($('#bkAuthor').value || '').trim().slice(0, 60);
     if (S.bookPin) askPin(ok => ok && finishBook(title, author), 'Grown-up: did she read?'); else finishBook(title, author); };
@@ -131,8 +131,8 @@ function bookPicker() {
   $('#bkExtra').innerHTML = `<p class="bkq">Which book are you reading?</p>
     <div class="bkshelf">${shelf.map((x, i) => `<button class="bkchip" data-bk="${i}">📕 ${esc(x.title)}${x.author ? `<small>${esc(x.author)}</small>` : ''}</button>`).join('')}
     <button class="bkchip new" id="bkNew">＋ A new book</button></div>
-    <div class="bkform" id="bkNewForm" style="display:none"><label class="bktitle">Book title <input id="bkNewT" maxlength="60" placeholder="e.g. Pete the Cat"></label>
-    <label class="bktitle">Author <input id="bkNewA" maxlength="60" placeholder="e.g. James Dean (optional)"></label></div>`;
+    <div class="bkform" id="bkNewForm" style="display:none"><label class="bktitle">Book title <input id="bkNewT" maxlength="60" placeholder="e.g. The Little Red Hen"></label>
+    <label class="bktitle">Author <input id="bkNewA" maxlength="60" placeholder="optional"></label></div>`;
   const mark = el => document.querySelectorAll('.bkchip').forEach(c => c.classList.toggle('on', c === el));
   document.querySelectorAll('[data-bk]').forEach(c => c.onclick = () => { const x = shelf[+c.dataset.bk]; bkSel = {title: x.title, author: x.author}; mark(c); $('#bkNewForm').style.display = 'none'; Bridge.speak(x.title); });
   $('#bkNew').onclick = () => { bkSel = 'new'; mark($('#bkNew')); $('#bkNewForm').style.display = ''; $('#bkNewT').focus(); };

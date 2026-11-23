@@ -1,6 +1,6 @@
 /* In-app User guide + About (Grown-ups area). */
 'use strict';
-const APP_VERSION = '2.5';
+const APP_VERSION = '2.6';
 const APP_DATE = 'November 2026';
 const APP_DEVELOPER = 'the Learning Gate team';
 const MASCOT = () => (typeof S !== 'undefined' && S.mascotName) || 'Gigi';
@@ -61,6 +61,15 @@ const GUIDE = [
     <li>When time is up, check the title and author and confirm with the PIN.</li></ol>
     <p>She gets 3 stars and 15 minutes of play (unless the day's play is used up or it is rest time). The book is remembered for one-tap re-reads and shows with its author on the dashboard and in the Sunday email.</p>
     <p><b>Reading tutor</b> (read-aloud questions): <b>🔊 Listen first</b> highlights each word as it is spoken; tap any word to hear it; words turn green as she reads aloud.</p>`],
+  ['🏠 Home library (our paper books)', `
+    <p>Our own paper books are in the app as shelves: a sample shelf of classic tales (in the real app: the family's own book series). Only the titles are in the app, never the books' text.</p>
+    <ol><li>In <b>📚 I read a book</b>, the next book from each shelf is shown under <b>From our home library</b>. Tap it, then start the timer.</li>
+    <li>When the time is up, choose <b>who read it</b>: by herself, or together.</li>
+    <li><b>Talk about it:</b> Gigi asks 3 short questions aloud (who, where, the problem, the ending, her favourite part, or the book's theme). She answers out loud; a grown-up taps <b>👍 Got it</b> or <b>🤔 Needed help</b>. There is no pass or fail, and play time is never held back. <b>Skip talking today</b> is always there.</li>
+    <li><b>Phonics books</b> she read by herself end with a 3-round <b>sound game</b> on that book's vowel sound.</li></ol>
+    <ul><li>Each book moves through <b>To read → 🤝 Read together → ⭐ Read by herself → 🏅 Mastered</b>. Mastered = read by herself twice and she understood it (read-together books: twice together).</li>
+    <li>Grown-ups → <b>🏠 Home library</b>: tap a status to change it, ✎ to add your own question for a book, and <b>＋ Add a book</b> for any other paper book (tick "read together" for harder or chapter books when she is ready).</li>
+    <li>Home library progress is shared between her devices and shows on the dashboard and in the Sunday email.</li></ul>`],
   ['Feelings check-in and __MASCOT__', `
     <p>Once a day the app asks "How are you feeling today?" (happy, calm, tired, sad, mad, worried). She can skip it. If she feels sad, mad or worried, she gets a kind reply and buttons to talk to Dad or call Mom or Grandma. It never blocks learning.</p>
     <p><b>__MASCOT__</b> grows with learning days: egg (0), hatchling (1), chick (3), baby owl (6), reading owl (10), graduate owl (16), star owl (25), royal owl (40). It only grows; it never gets sad or shrinks.</p>`],

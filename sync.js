@@ -39,7 +39,8 @@ function trySync() {
     mascot: typeof mascotStage === 'function' ? mascotStage().s.name : '', days: typeof learningDays === 'function' ? learningDays() : 0,
     moodToday: ((P.moods || []).filter(m => m.date === todayKey()).slice(-1)[0] || {}).mood || '', readWeek: typeof bookWeek === 'function' ? bookWeek().mins : 0};
   if (typeof progressExtras === 'function') try { Object.assign(body, progressExtras()); } catch (e) {}
-  if (typeof bedtimeExtras === 'function') try { Object.assign(body, bedtimeExtras()); } catch (e) {}   // sight words, story books, level changes
+  if (typeof bedtimeExtras === 'function') try { Object.assign(body, bedtimeExtras()); } catch (e) {}
+  if (typeof libraryExtras === 'function') try { Object.assign(body, libraryExtras()); } catch (e) {}   // sight words, story books, level changes
   return fetch(S.syncUrl, {method: 'POST', mode: 'no-cors', headers: {'Content-Type': 'text/plain;charset=utf-8'}, body: JSON.stringify(body)})
     .then(() => { if (events.length) P.syncedT = Math.max(...events.map(s => s.t)); P.lastSync = Date.now(); saveAll(); syncStatus = 'ok'; return true; })
     .catch(() => { syncStatus = 'offline'; return false; });   // try again next time (e.g. after a car ride with no signal)
