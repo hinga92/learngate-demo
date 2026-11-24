@@ -96,9 +96,15 @@ const BEDTIME_STORIES = [
 P.bedtime = P.bedtime || {nights: [], streak: 0, best: 0, count: 0};
 const BT_BEFORE = 45, BT_AFTER = 60;   // minutes around bedtime when the story is open
 const toMin = s => { const m = /^(\d{1,2}):(\d{2})$/.exec(s || ''); return m ? +m[1] * 60 + +m[2] : null; };
+// Story time is its own setting (Grown-ups → 🌙 Bedtime story), so it can come before rest time starts.
+// Default 7:30–8:45 pm. If the times are cleared, it falls back to 45 min before → 60 min after rest time.
+Object.assign(DEFAULT_SETTINGS, {btFrom: '19:30', btTo: '20:45'});
+if (S.btFrom === undefined) S.btFrom = '19:30'; if (S.btTo === undefined) S.btTo = '20:45';
 function bedtimeOpen() {
-  const st = toMin(S.bedtimeStart || '20:00'); if (st == null) return false;
   const d = new Date(), now = d.getHours() * 60 + d.getMinutes();
+  const a = toMin(S.btFrom), b = toMin(S.btTo);
+  if (a != null && b != null && a !== b) return a < b ? (now >= a && now < b) : (now >= a || now < b);   // also works across midnight
+  const st = toMin(S.bedtimeStart || '20:00'); if (st == null) return false;
   const diff = ((now - st) % 1440 + 1440) % 1440;           // minutes since bedtime started (0..1439)
   return diff <= BT_AFTER || diff >= 1440 - BT_BEFORE;
 }
@@ -197,11 +203,17 @@ if (typeof mergeProgress === 'function') { const prevM = mergeProgress; mergePro
 if (S.bedtimeStories === undefined) S.bedtimeStories = true;
 (() => { const prevRP = renderParent; renderParent = function () { const r = prevRP.apply(this, arguments);
   try { const body = $('#parentBody'); if (body && !$('#btCard')) body.insertAdjacentHTML('beforeend', `<div class="card" id="btCard"><h3>🌙 Bedtime story</h3>
-    <label class="chk"><input id="btOn" type="checkbox" ${S.bedtimeStories !== false ? 'checked' : ''}> Show the bedtime story button (from ${BT_BEFORE} min before bedtime until ${BT_AFTER} min after it starts)</label>
+    <label class="chk"><input id="btOn" type="checkbox" ${S.bedtimeStories !== false ? 'checked' : ''}> Show the bedtime story button</label>
+    <div class="row2"><label>Story time from <input id="btFrom" type="time" value="${esc(S.btFrom || '')}"></label><label>until <input id="btTo" type="time" value="${esc(S.btTo || '')}"></label></div>
+    <p class="muted">The 🌙 button shows on her home screen only between these times (even during rest time). Set it to end around her bedtime.</p>
     <p>Stories heard: <b>${(P.bedtime.nights || []).length}</b> · Nights in a row now: <b>${btStreak()}</b> · Best: <b>${P.bedtime.best || 0}</b></p>
     <p class="muted">One calm read-to-me story per night, ${BEDTIME_STORIES.length} stories in rotation. The screen dims while it plays. It never unlocks play time.</p></div>`); } catch (e) { console.error(e); }
   return r; }; })();
-(() => { const prevSP = saveParent; saveParent = function () { if ($('#btOn')) S.bedtimeStories = $('#btOn').checked; return prevSP.apply(this, arguments); }; })();
+(() => { const prevSP = saveParent; saveParent = function () {
+  if ($('#btOn')) S.bedtimeStories = $('#btOn').checked;
+  const f = $('#btFrom'), t = $('#btTo');
+  if (f && t) { const ok = v => /^\d{2}:\d{2}$/.test(v); if (ok(f.value) && ok(t.value) && f.value !== t.value) { S.btFrom = f.value; S.btTo = t.value; } else if (!f.value && !t.value) { S.btFrom = ''; S.btTo = ''; } }
+  return prevSP.apply(this, arguments); }; })();
 
 // for the family Sheet (dashboard + email)
 function bedtimeExtras() { const week = new Set(); const d = new Date(); for (let i = 0; i < 7; i++) { week.add(d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0')); d.setDate(d.getDate() - 1); }

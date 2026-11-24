@@ -1,6 +1,6 @@
 /* In-app User guide + About (Grown-ups area). */
 'use strict';
-const APP_VERSION = '2.8';
+const APP_VERSION = '2.9';
 const APP_DATE = 'November 2026';
 const APP_DEVELOPER = 'the Learning Gate team';
 const MASCOT = () => (typeof S !== 'undefined' && S.mascotName) || 'Gigi';
@@ -49,11 +49,11 @@ const GUIDE = [
     <p><b>Levels:</b> each skill has level 1–3. She moves up after <b>85%</b> or more right on the first try over her last 8–10 answers at that level, and back down below <b>60%</b>, so one lucky or unlucky answer never changes it.</p>
     <p>The <b>📖 Gigi's Stories &amp; sight words</b> and <b>📈 Levels</b> cards (Grown-ups) show books read, words known / learning / tricky, and every skill with its level and last-10 score (⬆️ ⬇️ = changed this week).</p>`],
   ['🌙 Bedtime story', `
-    <p>One calm, read-to-me story each night to build a bedtime routine. The <b>🌙 Bedtime story</b> button shows on home from 45 minutes before bedtime until 60 minutes after rest time starts.</p>
+    <p>One calm, read-to-me story each night to build a bedtime routine. The <b>🌙 Bedtime story</b> button shows on home only during <b>story time</b>: 7:30–8:45 pm unless you change it (it works even during rest time).</p>
     <ul><li>Gigi reads it aloud with the words lighting up, on a dark starry screen; the screen dims while it plays and goes back afterwards. Pause, back and next buttons are there.</li>
     <li>One new story per night (14 stories in rotation). <b>Hear it again</b> is allowed but counts once.</li>
     <li>Its own <b>🌙 nights in a row</b> streak. It never unlocks play time.</li>
-    <li>Turn it on or off in the <b>🌙 Bedtime story</b> card (Grown-ups).</li></ul>`],
+    <li>Change story time or turn it off in the <b>🌙 Bedtime story</b> card (Grown-ups): set <b>Story time from … until …</b> to end around her bedtime, then Save. Both devices get the new times.</li></ul>`],
   ['📚 I read a book (real books)', `
     <p>A timer (15 minutes by default) for a real paper book.</p>
     <ol><li><b>Which book?</b> Tap a book from her shelf (the last 8 books she read) or <b>＋ A new book</b> and type the title and author (a grown-up can help).</li>
