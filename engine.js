@@ -33,6 +33,28 @@ function numWrongs(ans, lo = 0, hi = 120) {
   return uniq([ans + 1, ans - 1, ans + 2, ans - 2, ans + 10, ans - 10].filter(x => x >= lo && x <= hi && x !== ans));
 }
 
+// ---------------- speech: turn screen text into something a voice reads naturally ----------------
+// Dashes, spelled-out letters, syllable hyphens, maths symbols, emoji and "…" confuse text-to-speech
+// (it says "dash", "minus", skips "−", or reads emoji names). Every Bridge.speak() goes through here.
+function speakable(t) {
+  let s = String(t == null ? '' : t);
+  s = s.replace(/<[^>]*>/g, ' ');                                                   // any HTML
+  s = s.replace(/[\p{Extended_Pictographic}\u{1F1E6}-\u{1F1FF}️‍⃣]/gu, ' ');   // emoji
+  s = s.replace(/[↔→←⇒➜]/g, ' ');                                                  // arrows
+  s = s.replace(/_{2,}|▢/g, ' blank ');
+  s = s.replace(/\b([A-Za-z])((?:\s*-\s*[A-Za-z]\b)+)/g, m => m.split(/\s*-\s*/).join(', '));   // p - i - g  ->  p, i, g
+  s = s.replace(/\b[A-Za-z]+(?:-[A-Za-z]+){2,}\b/g, m => m.split('-').join(', '));          // kan-ga-roo -> kan, ga, roo
+  s = s.replace(/(\d)\s*[−–-]\s*(?=\d)/g, '$1 minus ');                             // 11 − 8
+  s = s.replace(/([+=−×÷]\s*)\?/g, '$1 what ').replace(/(^|[\s(:])\?(?=\s*[+=−×÷-])/g, '$1what ');   // the unknown in "2 + ? = 12"
+  s = s.replace(/\s*−\s*/g, ' minus ').replace(/\bwhat\s*-\s*(?=\d)/g, 'what minus ').replace(/\s*\+\s*/g, ' plus ').replace(/(\d)\s*[×x]\s*(?=\d)/g, '$1 times ').replace(/(\d)\s*÷\s*(?=\d)/g, '$1 divided by ');
+  s = s.replace(/(\d)\s*<\s*(?=\d)/g, '$1 is less than ').replace(/(\d)\s*>\s*(?=\d)/g, '$1 is greater than ');
+  s = s.replace(/\s*=\s*/g, ' equals ').replace(/\s[<>]\s/g, ' ');
+  s = s.replace(/\s*[—–]\s*/g, ', ').replace(/\s+-\s+/g, ', ');                    // dashes used as pauses
+  s = s.replace(/…|\.{3,}/g, '. ');
+  s = s.replace(/\s+([,.!?])/g, '$1').replace(/([,.!?]){2,}/g, '$1').replace(/,\s*([.!?])/g, '$1').replace(/\s{2,}/g, ' ').trim();
+  return s.replace(/^[,.\s]+/, '');
+}
+
 // ---------------- native bridge (Android injects window.Native) ----------------
 const Bridge = (() => {
   const N = window.Native;
@@ -44,8 +66,8 @@ const Bridge = (() => {
   return {
     native: !!N,
     speak(t) {
-      if (!t) return;
-      if (N) return N.speak(String(t));
+      if (!t) return; t = speakable(t); if (!t) return;
+      if (N) return N.speak(t);
       if (!window.speechSynthesis) return;
       speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(t); u.rate = 0.85; u.pitch = 1.1; if (voice) u.voice = voice; speechSynthesis.speak(u);
     },
@@ -191,7 +213,7 @@ G.m_rest = () => { const [th, em] = pick(THINGS); const k = R(0, 1); const w = R
   const left = w - p; return {type: 'number', prompt: `There are ${w} ${th}. Some go away. Now there are ${left}. How many went away?`, say: `There are ${w} ${th}. Some go away. Now there are ${left}. How many went away?`, answer: p,
     hint: `Count up from ${left} to ${w}. ${left} + ? = ${w}`}; };
 G.r_th = () => { if (Math.random() < .5) { const w = pick(TH_WORDS.slice(0, 4)); const opts = choicesFrom(w, TH_WORDS.filter(x => x !== w), 4);
-    return {type: 'choice', prompt: 'Listen 🔊 and tap the word.', say: `Find the word: ${w}. ${w}.`, choices: opts, answer: w, wordChoices: true, noSpeakAnswer: true,
+    return {type: 'choice', prompt: 'Listen 🔊 and tap the word.', say: `Find the word: ${w}.`, choices: opts, answer: w, wordChoices: true, noSpeakAnswer: true,
       hint: `They, there, that, this all start with th. Look at the end: they ends in "ey", there in "ere", that in "at", this in "is".`}; }
   const [sent, ans] = pick(TH_SENT); const cap = ans[0] === ans[0].toUpperCase(); const base = ['they', 'there', 'that', 'this'];
   const opts = shuffle(base.map(x => cap ? x[0].toUpperCase() + x.slice(1) : x));
@@ -267,9 +289,9 @@ G.m_data = () => { const fr = shuffle([['🍎', 'apples'], ['🍌', 'bananas'], 
 
 // Reading
 const LET = 'bcdfghjklmnprstvwxz'.split('');
-G.r_end = () => { const [w, e] = pick(CVC); const ans = w.slice(-1); return {type: 'choice', prompt: `What sound does <b>${w}</b> end with?`, say: `${w}. What is the ending sound in ${w}?`, visual: big(e),
+G.r_end = () => { const [w, e] = pick(CVC); const ans = w.slice(-1); return {type: 'choice', prompt: `What sound does <b>${w}</b> end with?`, say: `What is the ending sound in ${w}?`, visual: big(e),
   choices: choicesFrom(ans, LET), answer: ans, hint: `Say it slowly: ${w.split('').join(' - ')}. Listen to the very last sound.`}; };
-G.r_begin = () => { const [w, e] = pick(CVC); const ans = w[0]; return {type: 'choice', prompt: 'What sound does it start with?', say: `${w}. What is the first sound in ${w}?`, visual: big(e),
+G.r_begin = () => { const [w, e] = pick(CVC); const ans = w[0]; return {type: 'choice', prompt: 'What sound does it start with?', say: `What is the first sound in ${w}?`, visual: big(e),
   choices: choicesFrom(ans, LET), answer: ans, hint: `Say ${w} slowly and listen to the first sound.`}; };
 G.r_syll = () => { const L = level('r_syll'); const pool = SYLL.filter(x => L === 1 ? true : x[1] > 1); const [w, n, e, parts] = pick(pool);
   return {type: 'choice', prompt: `Clap it! How many parts in <b>${w}</b>?`, say: `Clap the word ${w}. How many parts do you hear?`, visual: big(e), choices: ['1', '2', '3'], answer: String(n),
@@ -287,7 +309,7 @@ G.r_sight = () => { const L = level('r_sight'); const list = SIGHT.slice(0, L).f
   const mine = typeof practiceWords === 'function' ? practiceWords(6).filter(x => x.length > 1) : [];   // her own learning / due-for-review words
   const w = mine.length && Math.random() < 0.6 ? pick(mine) : pick(L === 1 ? SIGHT[0] : SIGHT[L - 1]); const wr = shuffle(list.filter(x => x !== w && x[0] === w[0])).concat(shuffle(list)).filter(x => x !== w);
   const opts = choicesFrom(w, wr.slice(0, 6), 4);
-  return {type: 'choice', prompt: 'Listen 🔊 and tap the word.', say: `Find the word: ${w}. ${w}.`, choices: opts, answer: w, hint: `Listen again: ${w}`, noSpeakAnswer: true, wordChoices: true}; };
+  return {type: 'choice', prompt: 'Listen 🔊 and tap the word.', say: `Find the word: ${w}.`, choices: opts, answer: w, hint: `Listen again: ${w}`, noSpeakAnswer: true, wordChoices: true}; };
 G.r_vocab = () => { if (Math.random() < .55) { const o = pick(OPPOSITES); const flip = Math.random() < .5; const w = flip ? o[1] : o[0], ans = flip ? o[0] : o[1]; const wr = OPPOSITES.filter(x => x !== o).flatMap(x => [x[0], x[1]]);
     return {type: 'choice', prompt: `What is the opposite of <b>${w}</b>?`, say: `What is the opposite of ${w}?`, visual: big(flip ? o[3] : o[2]), choices: choicesFrom(ans, wr), answer: ans, hint: `Opposites are as different as can be. ${o[2]} ↔ ${o[3]}`, speakChoices: true}; }
   const [cat, yes, no] = pick(CATEGORIES); const ans = pick(yes); return {type: 'choice', prompt: `Which one is in the group <b>${cat}</b>?`, say: `Which one belongs in the group ${cat}?`, choices: choicesFrom(ans, no), answer: ans, hint: `Think: is it a kind of ${cat}?`, speakChoices: true}; };
@@ -306,7 +328,7 @@ G.w_caps = () => { const s = pick(BUILD); const noCap = s[0].toLowerCase() + s.s
     hint: 'A sentence starts with a CAPITAL letter and ends with a period.', noSpeakAnswer: true}; };
 G.w_spell = () => { const L = level('w_spell'); const pool = L === 1 ? CVC : L === 2 ? CVC.concat(DIGRAPH.filter(d => d[0].length <= 4)) : DIGRAPH.concat(SILENT_E); const it = pick(pool); const w = it[0], e = it[1];
   const extra = shuffle('abcdefghilmnoprstu'.split('').filter(c => !w.includes(c))).slice(0, 2);
-  return {type: 'tiles', prompt: 'Spell the word.', say: `Spell the word: ${w}. ${w}.`, visual: big(e), tiles: shuffle(w.split('').concat(extra)), answer: w.split(''), join: '', hint: `Say it slowly: ${w.split('').join(' - ')}`, letters: true}; };
+  return {type: 'tiles', prompt: 'Spell the word.', say: `Spell the word: ${w}.`, visual: big(e), tiles: shuffle(w.split('').concat(extra)), answer: w.split(''), join: '', hint: `Say it slowly: ${w.split('').join(' - ')}`, letters: true}; };
 G.w_punct = () => { const items = [['Can you see the bird', '?'], ['I like pizza', '.'], ['Where is my hat', '?'], ['The dog is brown', '.'], ['Do you want to play', '?'], ['We went to the park', '.'], ['What is your name', '?'], ['My cat is soft', '.'], ['Is it time for lunch', '?'], ['The sun is hot', '.']];
   const [s, p] = pick(items); return {type: 'choice', prompt: `Which mark goes at the end?<div class="eq small">${s} ▢</div>`, say: `${s}. Is it telling, or asking? Which mark goes at the end?`, choices: ['.', '?'], answer: p,
     hint: 'Asking sentences end with a question mark ?. Telling sentences end with a period.'}; };
@@ -381,7 +403,9 @@ function nextQuestion() {
   if (session.i >= session.plan.length) return session.challenge ? finishChallenge() : finishSession();
   const it = makeItem(session.plan[session.i]); session.item = it; session.tries = 0;
   renderQuestion(it); show('quiz');
-  if (S.readQuestions || S.carMode) setTimeout(() => Bridge.speak(it.type === 'aloud' && S.carMode ? 'Press the microphone and read this sentence: ' + it.text : it.say), 350);
+  if (S.readQuestions || S.carMode) { const q = it.type === 'aloud' && S.carMode ? 'Press the microphone and read this sentence: ' + it.text : it.say;
+    session.qSpeakUntil = Date.now() + 350 + 700 + speakable(q).split(/\s+/).length * 450;   // rough length of the spoken question
+    setTimeout(() => Bridge.speak(q), 350); }
   if (typeof carRepeat === 'function') carRepeat(it);
 }
 function renderQuestion(it) {
@@ -394,7 +418,7 @@ function renderQuestion(it) {
   $('.qbody').classList.toggle('split', it.type === 'number' || (it.type === 'tiles' && !!it.visual));
   if (it.type === 'choice') {
     it.choices.forEach((c, i) => { const b = document.createElement('button'); b.className = 'choice' + (it.wordChoices ? ' wordc' : '') + (it.bigChoices ? ' bigc' : '') + (it.choiceHTML ? ' pic' : '');
-      b.innerHTML = it.choiceHTML ? it.choiceHTML[i] : esc(c); b.onclick = () => { if (it.speakChoices) Bridge.speak(c); answer(c, b); }; A.appendChild(b); });
+      b.innerHTML = it.choiceHTML ? it.choiceHTML[i] : esc(c); b.onclick = () => { if (it.speakChoices && Date.now() > (session.qSpeakUntil || 0)) Bridge.speak(c); answer(c, b); }; A.appendChild(b); });
   } else if (it.type === 'number') {
     A.innerHTML = `<div class="numdisp" id="numdisp">&nbsp;</div><div class="pad">${[1,2,3,4,5,6,7,8,9].map(d => `<button data-d="${d}">${d}</button>`).join('')}<button data-d="del" class="del">⌫</button><button data-d="0">0</button><button data-d="ok" class="ok">✔</button></div>`;
     let v = ''; A.querySelectorAll('.pad button').forEach(b => b.onclick = () => { const d = b.dataset.d; if (d === 'del') v = v.slice(0, -1); else if (d === 'ok') { if (v) answer(v, b); return; } else if (v.length < 3) v += d; $('#numdisp').innerHTML = v || '&nbsp;'; session.numReset = () => { v = ''; if ($('#numdisp')) $('#numdisp').innerHTML = '&nbsp;'; }; });

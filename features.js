@@ -87,9 +87,12 @@ function renderBook() {
     $('#bkTitle').textContent = 'Reading time!'; $('#bkClock').textContent = ''; $('#bkFill').style.width = '0';
     $('#bkMsg').innerHTML = `Get a real book, sit somewhere cozy,<br>and read for <b>${S.bookMinutes} minutes</b>.` + (S.bookReward && !inBedtime() ? `<br>You'll earn <b>${S.bookReward} minutes</b> of play!` : '');
     bookPicker();
-    $('#bkBtns').innerHTML = `<button class="bigbtn" id="bkStart">▶ Start reading</button>`;
+    $('#bkBtns').innerHTML = `<button class="bigbtn" id="bkStart">▶ Start reading</button><button class="small-btn" id="bkLog">📝 Already read one? Log it</button>`;
+    $('#bkLog').onclick = () => { const pick = bookChoice(); askPin(ok => { if (!ok) return;   // read without the timer: a grown-up adds it
+      P.bookTimer = {start: Date.now(), mins: S.bookMinutes, pausedMs: 0, pauseAt: 0, title: pick.title, author: pick.author, early: 1}; saveAll(); renderBook(); }, 'Grown-up: add a book she already read?'); };
     $('#bkStart').onclick = () => { const pick = bookChoice(); P.bookTimer = {start: Date.now(), mins: S.bookMinutes, pausedMs: 0, pauseAt: 0, title: pick.title, author: pick.author}; saveAll();
       Bridge.speak(pick.title ? `Happy reading ${pick.title}! I will tell you when the time is up.` : 'Happy reading! I will tell you when the time is up.'); renderBook(); };
+  } else if (b.early) { bookDone();   // finished early, waiting for the title
   } else {
     const total = b.mins * 60000;
     const draw = () => {
@@ -99,7 +102,9 @@ function renderBook() {
     };
     $('#bkExtra').innerHTML = b.title ? `<div class="bknow">📖 <b>${esc(b.title)}</b>${b.author ? ` <span class="muted">by ${esc(b.author)}</span>` : ''}</div>` : '';
     $('#bkTitle').textContent = b.pauseAt ? 'Paused' : 'Reading…'; $('#bkMsg').innerHTML = b.pauseAt ? 'Tap Resume when you are ready.' : 'Keep reading! The tablet will cheer when time is up. 📖';
-    $('#bkBtns').innerHTML = (b.pauseAt ? '<button class="bigbtn2" id="bkPause">▶ Resume</button>' : '<button class="bigbtn2 ghost" id="bkPause">⏸ Pause</button>') + '<button class="small-btn danger" id="bkStop">✖ Stop</button>';
+    $('#bkBtns').innerHTML = (b.pauseAt ? '<button class="bigbtn2" id="bkPause">▶ Resume</button>' : '<button class="bigbtn2 ghost" id="bkPause">⏸ Pause</button>') + '<button class="bigbtn2 ok" id="bkFin">✅ I finished my book</button><button class="small-btn danger" id="bkStop">✖ Stop</button>';
+    $('#bkFin').onclick = () => askPin(ok => { if (!ok || P.bookTimer !== b) return; clearInterval(bookTick);   // whole book read before the timer ended
+      b.mins = Math.max(1, Math.ceil(bkElapsed(b) / 60000)); b.pauseAt = 0; b.early = 1; saveAll(); renderBook(); }, 'Grown-up: did she finish the whole book?');
     $('#bkPause').onclick = () => { if (b.pauseAt) { b.pausedMs += Date.now() - b.pauseAt; b.pauseAt = 0; } else b.pauseAt = Date.now(); saveAll(); renderBook(); };
     $('#bkStop').onclick = () => { if ($('#bkStop').dataset.sure) { P.bookTimer = null; saveAll(); renderBook(); } else { $('#bkStop').dataset.sure = 1; $('#bkStop').textContent = 'Tap again to stop'; } };
     draw(); if (!b.pauseAt) bookTick = setInterval(draw, 1000);
@@ -112,11 +117,16 @@ function bookDone() {
   const b = P.bookTimer; if (!b) return;
   $('#bkTitle').textContent = 'Time is up! 🎉'; $('#bkClock').textContent = '0:00'; $('#bkFill').style.width = '100%';
   $('#bkMsg').innerHTML = `You read for <b>${b.mins} minutes</b>. Wonderful!` + (S.bookPin ? '<br>Ask a grown-up to check.' : '');
-  confetti(30); Bridge.speak(`Time is up! You read for ${b.mins} minutes. Wonderful reading!` + (S.bookPin ? ' Ask a grown-up to check.' : ''));
+  confetti(30); Bridge.speak(b.early ? 'You finished your book. Wonderful reading! What was it called?' : `Time is up! You read for ${b.mins} minutes. Wonderful reading!` + (S.bookPin ? ' Ask a grown-up to check.' : ''));
   $('#bkExtra').innerHTML = `<div class="bkform"><label class="bktitle">Book title <input id="bkName" maxlength="60" value="${esc(b.title || '')}" placeholder="e.g. The Little Red Hen"></label>
     <label class="bktitle">Author <input id="bkAuthor" maxlength="60" value="${esc(b.author || '')}" placeholder="optional"></label></div>`;
-  $('#bkBtns').innerHTML = `<button class="bigbtn" id="bkConfirm">${S.bookPin ? '👩 Grown-up check' : '✅ Done'}</button>`;
+  $('#bkBtns').innerHTML = `<button class="bigbtn" id="bkConfirm">${S.bookPin && !b.early ? '👩 Grown-up check' : '✅ Done'}</button>`;
+  if (b.early) {   // a grown-up already checked: say so and let them fix the minutes
+    $('#bkTitle').textContent = 'Book finished! 🎉'; $('#bkClock').textContent = ''; $('#bkMsg').innerHTML = 'A grown-up checked it. Great reading!';
+    $('#bkExtra').querySelector('.bkform').insertAdjacentHTML('beforeend', `<label class="bktitle">Minutes read <input id="bkMins" type="number" inputmode="numeric" min="1" max="180" value="${b.mins}"></label>`);
+  }
   $('#bkConfirm').onclick = () => { const title = ($('#bkName').value || '').trim().slice(0, 60), author = ($('#bkAuthor').value || '').trim().slice(0, 60);
+    if (b.early) { const m = parseInt(($('#bkMins') || {}).value, 10); b.mins = m > 0 ? Math.min(180, m) : b.mins; return finishBook(title, author); }
     if (S.bookPin) askPin(ok => ok && finishBook(title, author), 'Grown-up: did she read?'); else finishBook(title, author); };
 }
 // ---- her bookshelf: every real book she has read, remembered for one-tap re-reads ----

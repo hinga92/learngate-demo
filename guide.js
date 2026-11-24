@@ -1,6 +1,6 @@
 /* In-app User guide + About (Grown-ups area). */
 'use strict';
-const APP_VERSION = '2.9';
+const APP_VERSION = '3.0';
 const APP_DATE = 'November 2026';
 const APP_DEVELOPER = 'the Learning Gate team';
 const MASCOT = () => (typeof S !== 'undefined' && S.mascotName) || 'Gigi';
@@ -22,7 +22,7 @@ const GUIDE = [
     <li>The iPad build stops opening after 7 days: run the iPad command again. Progress is kept.</li>
     <li>Building needs the file <b>secrets.js</b> (the Sheet link and password). It is on the Mac but never on GitHub; on a new computer copy <b>secrets.example.js</b> to <b>secrets.js</b> and fill it in.</li></ul>`],
   ["Ava's day", `
-    <ol><li>She taps <b>🚀 Let's learn!</b> Each question is read aloud. A wrong first try gives a hint; a second miss shows the answer and brings the skill back later.</li>
+    <ol><li>She taps <b>🚀 Let's learn!</b> Each question is read aloud. (Since 3.0, signs and dashes are read as words: "8 + 2 = 10" is read "8 plus 2 equals 10", "kan-ga-roo" as "kan, ga, roo", and the choice she taps is not spoken over the question.) A wrong first try gives a hint; a second miss shows the answer and brings the skill back later.</li>
     <li>The reward screen shows her score and the minutes earned. <b>Let's play!</b> opens the apps you allowed, with a countdown.</li>
     <li>When time runs out, the tablet comes back here and locks again.</li></ol>
     <ul><li>Defaults: 5 questions earn 20 minutes, up to 90 minutes a day (change in Rules). When the day's play is used up, home says "Want to keep learning? Ask a grown-up" (see "More play time today").</li>
@@ -58,7 +58,9 @@ const GUIDE = [
     <p>A timer (15 minutes by default) for a real paper book.</p>
     <ol><li><b>Which book?</b> Tap a book from her shelf (the last 8 books she read) or <b>＋ A new book</b> and type the title and author (a grown-up can help).</li>
     <li>The book shows under the clock while she reads. Pause and Stop are there.</li>
-    <li>When time is up, check the title and author and confirm with the PIN.</li></ol>
+    <li>When time is up, check the title and author and confirm with the PIN.</li>
+    <li><b>Finished the book early?</b> Tap <b>✅ I finished my book</b> under the clock. A grown-up enters the PIN, checks the title and the minutes she actually read, and taps Done. She still gets the full play reward.</li>
+    <li><b>Read a book without the timer?</b> On the start screen, pick the book and tap <b>📝 Already read one? Log it</b>. A grown-up enters the PIN and types the minutes.</li></ol>
     <p><b>If nobody checked when the time was up,</b> the timer waits at 0:00 on that device. Tap <b>Which book was it?</b> to pick the book she read, then confirm; or tap <b>✖ Start over</b> (twice) to clear it without play time. Timers left for more than 12 hours are cleared by themselves. Each device keeps its own timer.</p>
     <p>She gets 3 stars and 15 minutes of play (unless the day's play is used up or it is rest time). The book is remembered for one-tap re-reads and shows with its author on the dashboard and in the Sunday email.</p>
     <p><b>Reading tutor</b> (read-aloud questions): <b>🔊 Listen first</b> highlights each word as it is spoken; tap any word to hear it; words turn green as she reads aloud.</p>`],
