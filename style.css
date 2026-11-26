@@ -105,7 +105,7 @@ tr.sh td{background:#faf6ee;font-weight:700}td small{color:#999}
 .modal{display:none;position:fixed;inset:0;background:#0007;z-index:10;align-items:center;justify-content:center}.modal.on{display:flex}
 .pinbox{background:#fff;border-radius:24px;padding:22px 30px;text-align:center}
 .pindots{font-size:40px;letter-spacing:10px;margin:8px 0 14px}.pindots.shake{animation:shake .4s;color:var(--red)}
-.pinpad{display:grid;grid-template-columns:repeat(3,90px);gap:10px}.pinpad button{height:70px;font-size:30px;border-radius:16px;background:#f3eee5}
+.pinpad .pinok{grid-column:2;background:var(--green,#4caf50);color:#fff}.pinpad{display:grid;grid-template-columns:repeat(3,90px);gap:10px}.pinpad button{height:70px;font-size:30px;border-radius:16px;background:#f3eee5}
 #fx{position:fixed;inset:0;pointer-events:none;z-index:20;overflow:hidden}
 #fx i{position:absolute;top:-40px;font-style:normal;animation:fall 2s ease-in forwards}
 @keyframes fall{to{transform:translateY(110vh) rotate(540deg);opacity:.7}}

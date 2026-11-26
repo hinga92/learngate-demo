@@ -1,6 +1,6 @@
 /* In-app User guide + About (Grown-ups area). */
 'use strict';
-const APP_VERSION = '3.2';
+const APP_VERSION = '3.3';
 const APP_DATE = 'November 2026';
 const APP_DEVELOPER = 'the Learning Gate team';
 const MASCOT = () => (typeof S !== 'undefined' && S.mascotName) || 'Gigi';
@@ -114,7 +114,7 @@ const GUIDE = [
     <p>The Learning Gate icon on Dad's iPhone opens straight to her progress: each device's status, trophies, stars, play time, today's feeling, the last 7 days, <b>📖 Reading &amp; sight words</b>, <b>📈 Levels</b> and recent activity.</p>
     <ul><li><b>Personal link:</b> the icon is a private link, so there is no secret to type. Anyone with the link can see progress, so keep it to yourself. If a phone is lost, tap <b>🔗 Make a new link</b> at the bottom (the old one stops working).</li>
     <li><b>Add it to a phone:</b> open the dashboard, tap <b>📲 Get my Home Screen link</b> → Copy, open the <b>Safari</b> app, paste and go, then Share → Add to Home Screen. (Opened from an icon, there is no Share button.)</li>
-    <li><b>Remote control</b> asks your parent PIN once per visit: +15 or +30 minutes of play, <b>📚 +30 / +60 min to earn</b>, Lock now, quick messages or your own message. ✅ means the device received it. 5 wrong PINs lock commands for a while.</li>
+    <li><b>Remote control</b> asks your <b>remote-control PIN</b> (the dashboard PIN, checked by the Sheet; not her tablet PIN) and remembers it for 3 minutes, forgetting it when the app is closed: +15 or +30 minutes of play, <b>📚 +30 / +60 min to earn</b>, Lock now, quick messages or your own message. ✅ means the device received it. 5 wrong PINs lock commands for a while.</li>
     <li>The tablet checks about once a minute, even during play. The iPad checks while Learning Gate is open.</li></ul>`],
   ['Google Sheet and weekly email', `
     <p>The <b>Learning Gate progress</b> Sheet (the parent's Google account) is the go-between; you never need to open it. Don't delete or rename its <b>Sessions</b> tab, and keep sharing Restricted.</p>
@@ -123,7 +123,7 @@ const GUIDE = [
   ['Sharing with a teacher (demo edition)', `
     <p>A <b>demo edition</b> can be shared with teachers and reviewers. It has a made-up child ("Ava") with sample progress, no family names, numbers or links, no real names, and no syncing. It runs in any web browser, needs no account, and nothing done in it is sent anywhere. The grown-ups PIN in the demo is 1234.</p>
     <ul><li><b>The link to send:</b> <b>this website</b> (a free public website on GitHub Pages; anyone with the link can open it).</li>
-    <li><b>Reading aloud</b> works there too: allow the microphone when asked (best in Safari or Chrome).</li>
+    <li><b>Reading aloud</b> works there too. On a web page the microphone starts <b>off</b> for privacy (the browser sends speech to Google or Apple to turn it into text): turn on 🎤 in Grown-ups → Rules, then allow the microphone when asked (best in Safari or Chrome). The web page can't lock the device.</li>
     <li><b>After changing the app,</b> update the demo website from the Mac (it rebuilds, checks and publishes; live in about a minute):</li></ul>
     <pre>cd ~/Automation-Projects/LearnGate && bash tools/publish_demo.sh</pre>
     <ul><li>It stops if any family detail would end up in the demo. Only the demo goes to the public website; the real app stays in the private backup.</li>
@@ -133,24 +133,27 @@ const GUIDE = [
     <ul><li>The whole project is backed up to the private GitHub repository <b>LearnGate</b> every 10 minutes when something changed (a background job on the Mac). The Sheet password is never sent there.</li>
     <li>Log on the Mac: <b>~/Library/Logs/learngate-backup.log</b>. Pause and resume commands are in the project's README.</li></ul>`],
   ['Safety and privacy', `
-    <ul><li>No ads, no tracking, no outside analytics. Progress stays in the family Google account.</li>
-    <li>The Sheet only answers devices that know its password. Remote commands (unlock, lock, messages) also need a parent PIN, checked by the Sheet, with a lockout after 5 wrong tries. At most 8 devices can connect.</li>
+    <p><b>What Learning Gate collects:</b> no ads, no tracking, no outside analytics. Her progress stays on her devices and in the family Google Sheet only.</p>
+    <ul><li><b>Grown-up PIN (since 3.3):</b> 4 or 6 digits (6 is stronger). It stays on each device and is <b>never</b> sent to the Sheet; the tablet and iPad each keep their own (changing it on one doesn't change the other). It is stored scrambled (PBKDF2, 210,000 rounds; an older PIN is upgraded the first time you enter it), with a lockout after 5 wrong tries. It keeps Ava out of Grown-ups; it is not device security.</li>
+    <li><b>Remote-control PIN:</b> remote commands (unlock, lock, messages) need the separate dashboard PIN, checked by the Sheet, with a lockout after 5 wrong tries. Use a different PIN from her tablet PIN.</li>
+    <li><b>Microphone (since 3.3):</b> when she reads out loud, speech is turned into text to check the words. Nothing is recorded or kept by Learning Gate. On the tablet this happens on the tablet when Android has its offline English voice, otherwise Android may send it to Google; on the iPad, Apple turns it into text. Turn it off in Grown-ups → Rules (🎤 Use the microphone) and stories are read to her instead.</li>
+    <li>The Sheet only answers devices that know its password, which travels inside each request, never in a web address (since 3.3). At most 8 devices can connect.</li>
     <li>The Sunday email can only be sent on Sunday afternoon (once), and the test email only by you from the Apps Script editor, so nobody else can use the Sheet to send emails.</li>
     <li>The app only runs its own code (a content security policy blocks anything injected), and settings shared between devices are checked before use.</li>
     <li>A security test that attacks a local copy of the Sheet script can be run on the Mac at any time: <b>node tools/security_test.js</b>.</li>
     <li>USB debugging lets anyone with a cable read the tablet's app data: keep it off except while installing updates.</li>
     <li>The app shows only its own pages; outside web pages are blocked.</li>
-    <li>The PINs are stored scrambled, with a lockout after 5 wrong tries.</li>
     <li>Help always works. The app rewards and never punishes.</li>
-    <li>If a device is lost: make a new dashboard link, change the secret in the Sheet's script and in secrets.js, redeploy, and install a new app build.</li></ul>`],
+    <li>If a device is lost: change the PIN on her other device, set a new remote-control PIN, make a new dashboard link, change the secret in the Sheet's script and in secrets.js, redeploy, and install a new app build.</li></ul>`],
   ['Troubleshooting', `
     <ul><li><b>iPad app won't open:</b> run the iPad install command again (7-day limit).</li>
     <li><b>Can't open Grown-ups:</b> hold ⚙ (top-right of home) for about 1 second.</li>
     <li><b>Dashboard asks for the secret:</b> you opened an old icon. Use the personal link (see the dashboard section).</li>
     <li><b>Dashboard shows no devices:</b> she needs to finish one session; check the internet.</li>
+    <li><b>Remote control says "Set a remote-control PIN first" or the Sheet script needs updating:</b> set the PIN on the dashboard (🔐 at the bottom), and make sure the Sheet script is the 3.3 version.</li>
     <li><b>Remote command shows ⏳:</b> tablet, wait a minute; iPad, open Learning Gate.</li>
     <li><b>Can't share screen:</b> tablet, choose Entire screen; iPad, turn off Guided Access.</li>
-    <li><b>Read-aloud or stories never hear her:</b> allow the microphone in Tablet setup (iPad: Settings → Learning Gate → Microphone and Speech Recognition).</li>
+    <li><b>Read-aloud or stories never hear her:</b> check that 🎤 <b>Use the microphone</b> is on in Rules, then allow the microphone in Tablet setup (iPad: Settings → Learning Gate → Microphone and Speech Recognition).</li>
     <li><b>No 🌙 button:</b> it only shows around bedtime, and can be switched off in the 🌙 Bedtime story card.</li>
     <li><b>You need the tablet:</b> Right now → Parent mode.</li></ul>`]
 ];
