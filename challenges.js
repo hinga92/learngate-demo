@@ -3,6 +3,17 @@
 
 const CHALLENGES = [
   {id: 'unit2',   icon: '⭐', name: 'Unit 2 Test Prep',   skills: ['m_three', 'm_rest', 'm_place', 'm_doubles', 'm_add20', 'm_sub20', 'm_bond'], car: true},
+  {id: 'kcount',  icon: '🔢', name: 'Counting Fun',       skills: ['mk_count', 'mk_more', 'mk_teen', 'mk_add5', 'mk_make10'], car: true},
+  {id: 'g2math',  icon: '🪙', name: 'Coins, Arrays & 100s', skills: ['m2_money', 'm2_array', 'm2_add100', 'm2_evenodd', 'm2_skip', 'm2_place3', 'm2_timefacts'], car: true},
+  {id: 'times',   icon: '✖️', name: 'Times Table Champ',  skills: ['m3_mult', 'm3_div', 'm3_unknown'], car: true},
+  {id: 'fracs',   icon: '🍕', name: 'Fraction Pizza',     skills: ['m3_frac', 'm4_fraceq', 'm4_fracadd', 'm4_fracmul', 'm5_fracadd', 'm5_fracmul'], car: false},
+  {id: 'bignum',  icon: '🚀', name: 'Big Number Blast',   skills: ['m3_round', 'm3_add1000', 'm4_place', 'm4_mult', 'm4_div', 'm5_div', 'm5_pow10'], car: true},
+  {id: 'geo',     icon: '📐', name: 'Shapes, Area & Angles', skills: ['m3_area', 'm3_perim', 'm4_angles', 'm4_triangles', 'm4_areaword', 'm5_volume', 'm5_coord', 'm5_shapes'], car: false},
+  {id: 'decimal', icon: '💲', name: 'Decimal Dash',       skills: ['m4_dec', 'm5_decops', 'm5_pow10'], car: true},
+  {id: 'words',   icon: '🧩', name: 'Word Wizard',        skills: ['r_prefix', 'r_suffix', 'r_roots', 'r_syn', 'r_ant', 'r_multi', 'r_context', 'r_figur'], car: true},
+  {id: 'grammar', icon: '📝', name: 'Grammar Gym',        skills: ['w_irrpast', 'w_irrplural', 'w_pos', 'w_agree', 'w_tense', 'w_sentence', 'w_punct2', 'r_homo', 'w_spell2'], car: false},
+  {id: 'reader',  icon: '📚', name: 'Reading Detective',  skills: ['r_passage'], car: false},
+  {id: 'world',   icon: '🌎', name: 'Science & Social Studies', skills: ['sci_K', 'sci_1', 'sci_2', 'sci_3', 'sci_4', 'sci_5', 'soc_K', 'soc_1', 'soc_2', 'soc_3', 'soc_4', 'soc_5', 'hlth_K2', 'hlth_35', 'arts_K2', 'arts_35'], car: true},
   {id: 'bonds',   icon: '🔗', name: 'Bonds & Frames',     skills: ['m_bond'], car: false},
   {id: 'th',      icon: '🧠', name: 'Th- Word Hunt',      skills: ['r_th'], car: true},
   {id: 'doubles', icon: '🎲', name: 'Doubles Dash',      skills: ['m_doubles'], car: true},
@@ -48,7 +59,9 @@ function renderChallenges() {
   $('#chTop').innerHTML = `<div class="chcount">🏆 <b>${trophyCount()}</b> trophies</div>${treatBar()}`;
   $('#carToggle').textContent = S.carMode ? '🚗 Car mode: ON' : '🚗 Car mode: off';
   $('#carToggle').classList.toggle('on', !!S.carMode);
-  const list = CHALLENGES.filter(c => (!c.needsMic || canMic) && (!S.carMode || c.car) && c.skills.some(s => S.subjects[SKILLS[s].subject]));
+  // only challenges that have skills for her grade
+  const okSkill = s => SKILLS[s] && S.subjects[SKILLS[s].subject] && gradeOk(s);
+  const list = CHALLENGES.filter(c => (!c.needsMic || canMic) && (!S.carMode || c.car) && c.skills.some(okSkill));
   $('#chGrid').innerHTML = block ? `<p class="homemsg">${block === 'rest' ? '🌙 Challenges are resting too. See you tomorrow!' : '🌟 That\'s all the challenges for today. Amazing work!'}</p>` :
     list.map(c => { const st = chState(c.id); const got = P.trophies.filter(t => t.ch === c.id).length;
       return `<button class="chcard" data-ch="${c.id}"><span class="chicon">${c.icon}</span><span class="chname">${c.name}</span>
@@ -60,7 +73,8 @@ function renderChallenges() {
 
 function startChallenge(cid) {
   const c = CHALLENGES.find(x => x.id === cid), st = chState(cid);
-  const pool = c.skills.filter(s => S.subjects[SKILLS[s].subject]);
+  const pool = c.skills.filter(s => SKILLS[s] && S.subjects[SKILLS[s].subject] && gradeOk(s)).concat([]);
+  if (!pool.length) c.skills.filter(s => SKILLS[s] && S.subjects[SKILLS[s].subject]).forEach(s => pool.push(s));
   const plan = []; let last = null;
   for (let i = 0; i < CH_Q; i++) { let id = weightedPick(pool, new Set(pool.length > 1 && last ? [last] : [])); plan.push(id); last = id; }
   session = {plan, i: 0, firstTry: 0, start: Date.now(), results: [], practice: true,

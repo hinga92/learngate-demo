@@ -106,8 +106,28 @@ const CLASS_HFW = ['an','and','do','as','come','his','here','in','my','me','not'
 const _DOLCH = [
   ['a','and','away','big','blue','can','come','down','find','for','funny','go','help','here','I','in','is','it','jump','little','look','make','me','my','not','one','play','red','run','said','see','the','three','to','two','up','we','where','yellow','you'],
   ['all','am','are','at','ate','be','black','brown','but','came','did','do','eat','four','get','good','have','he','into','like','must','new','no','now','on','our','out','please','pretty','ran','ride','saw','say','she','so','soon','that','there','they','this','too','under','want','was','well','went','what','white','who','will','with','yes'],
-  ['after','again','an','any','as','ask','by','could','every','fly','from','give','going','had','has','her','him','his','how','just','know','let','live','may','of','old','once','open','over','put','round','some','stop','take','thank','them','then','think','walk','were','when']];
-const SIGHT = [CLASS_HFW, _DOLCH[0].concat(_DOLCH[1]).filter(w => !CLASS_HFW.includes(w)), _DOLCH[2].filter(w => !CLASS_HFW.includes(w))];
+  ['after','again','an','any','as','ask','by','could','every','fly','from','give','going','had','has','her','him','his','how','just','know','let','live','may','of','old','once','open','over','put','round','some','stop','take','thank','them','then','think','walk','were','when'],
+  ['always','around','because','been','before','best','both','buy','call','cold','does',"don't",'fast','first','five','found','gave','goes','green','its','made','many','off','or','pull','read','right','sing','sit','sleep','tell','their','these','those','upon','us','use','very','wash','which','why','wish','work','would','write','your'],
+  ['about','better','bring','carry','clean','cut','done','draw','drink','eight','fall','far','full','got','grow','hold','hot','hurt','if','keep','kind','laugh','light','long','much','myself','never','only','own','pick','seven','shall','show','six','small','start','ten','today','together','try','warm']];
+// Dolch levels per grade: K = pre-primer / primer / 1st, Grade 1 = pre-primer+primer / 1st / 2nd, Grade 2 = 1st / 2nd / 3rd,
+// Grade 3 = 2nd / 3rd / 3rd (sight-word practice ends in Grade 3; older grades work on vocabulary instead).
+const DOLCH_BY_GRADE = {K: [[0], [1], [2]], '1': [[0], [1], [2]],   // Ava, Grade 1: same lists as before grades were added
+                        '2': [[2], [3], [4]], '3': [[3], [4], [3, 4]], '4': [[3], [4], [3, 4]], '5': [[3], [4], [3, 4]]};
+const SIGHT = [[], [], []];   // filled by buildSight() once the settings are loaded, and again when they change
+function buildSight(grade, classWords) {
+  const lv = (DOLCH_BY_GRADE[grade] || DOLCH_BY_GRADE['1']).map(ix => [].concat(...ix.map(i => _DOLCH[i])));
+  const cls = uniqWords((classWords && classWords.length) ? classWords : grade === '1' ? CLASS_HFW : []);   // Grade 1: the class teacher's list unless a grown-up types a new one
+  const levels = cls.length ? [cls, lv[0].concat(lv[1]).filter(w => !cls.includes(w)), lv[2].filter(w => !cls.includes(w))] : lv;
+  levels.forEach((l, i) => { SIGHT[i] = l.length ? l : lv[i]; });
+  return SIGHT;
+}
+// A teacher's list pasted by a grown-up: words separated by commas, spaces or new lines.
+function uniqWords(list) {
+  const text = (Array.isArray(list) ? list.join(' ') : String(list || '')).replace(/<[^>]*>/g, ' ');
+  const words = text.split(/[^A-Za-z']+/).map(w => w.replace(/^'+|'+$/g, '')).filter(w => w.length && w.length <= 15);
+  return [...new Set(words.map(w => w === 'I' ? w : w.toLowerCase()))].slice(0, 150);
+}
+buildSight('1', []);
 const TH_WORDS = ['they','there','that','this','the','then','them','three','with'];
 const TH_SENT = [['___ are my friends.','They'],['___ is my cat.','This'],['Look over ___!','there'],['I like ___ hat.','that'],['___ went to the park.','They'],['Is ___ your dog?','that'],['___ is my book.','This'],['Put it over ___.','there'],['Can ___ come and play?','they'],['I want ___ one.','this']];
 

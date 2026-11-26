@@ -1,6 +1,6 @@
 /* In-app User guide + About (Grown-ups area). */
 'use strict';
-const APP_VERSION = '3.0';
+const APP_VERSION = '3.1';
 const APP_DATE = 'November 2026';
 const APP_DEVELOPER = 'the Learning Gate team';
 const MASCOT = () => (typeof S !== 'undefined' && S.mascotName) || 'Gigi';
@@ -44,6 +44,20 @@ const GUIDE = [
     <ul><li>The first time she finishes a book she wins a trophy (counts toward treats). The next book opens when she reads about 85% of the words right on her first try, or after two reads.</li>
     <li><b>⭐ Read by myself</b> (after the first read): she reads first and can tap <b>Help me</b>. A good solo read earns the third star.</li>
     <li>Stories never unlock play time. Like challenges, they rest at bedtime unless "Allow challenges during rest time" is on.</li></ul>`],
+  ['🎒 Grades (since 3.1)', `
+    <ul><li><b>Kindergarten:</b> counting to 20, more and fewer, teen numbers, adding and taking away within 5, making 10, flat and solid shapes; letter sounds, rhymes, syllables, first sight words; science, social studies, arts and health questions for K.</li>
+    <li><b>Grade 1:</b> adding and subtracting within 20, place value, time, shapes; phonics (short vowels, digraphs, magic e), sight words, story questions, building sentences.</li>
+    <li><b>Grade 2:</b> within 100 and 1,000, even and odd, coins, arrays, skip-counting, measuring; prefixes and suffixes, synonyms and antonyms, irregular verbs and plurals, homophones, reading passages, punctuation.</li>
+    <li><b>Grade 3:</b> multiplication and division facts, rounding, fractions on bars and number lines, area and perimeter, time to the minute, two-step word problems; context clues, figurative language, verb tenses, subject–verb agreement.</li>
+    <li><b>Grade 4:</b> place value to a million, multi-digit multiplication, division with remainders, factors and primes, equivalent fractions, decimals, angles, unit conversions; Greek and Latin roots, progressive tenses, fragments and run-ons.</li>
+    <li><b>Grade 5:</b> decimal operations, powers of 10, adding fractions with different denominators, multiplying fractions, 2-digit division, volume, the coordinate plane, order of operations; perfect tenses and longer reading passages.</li></ul>
+    <p>Science, social studies, arts and health questions follow the California standards for each grade. <b>🏆 Challenges</b> only show the challenges that fit the grade. Ava is in <b>Grade 1</b>. Change the grade any time in Grown-ups → <b>🎒 Grade and sight words</b> (for example when she starts Grade 2). Her Grade 1 sight words and the class teacher's class list stay exactly as before.</p>`],
+  ["Gigi's Stories: books for every grade", `
+    <p><b>📖 Gigi's Stories</b> changes with the grade you chose. In Grade 1 the shelf shows <b>📚 My grade</b> (her sight-word books) and <b>🚀 Challenge</b> (Grade 2 stories and true-fact books, for when she is ready). From Grade 2 it shows three tabs: <b>⬇ Easier</b>, <b>📚 My grade</b> and <b>🚀 Challenge</b>, and the book that fits best has a <b>⭐ Just right</b> badge.</p>
+    <ul><li><b>Kindergarten–Grade 1:</b> short sight-word books. Gigi reads each page first, then she repeats it (echo reading).</li>
+    <li><b>Grades 2–3:</b> longer stories and true-fact books. She reads each page out loud into the microphone (Gigi can read it first), with "words to know" before the book and 3–5 questions after it. Grade 3 adds a quick check-in question halfway.</li>
+    <li><b>Grades 4–5:</b> chapter-style books with headings, one paragraph a page, read silently or aloud. One <b>fluency page</b> is read into the microphone to measure accuracy and words per minute. Questions include main idea, inference, theme, vocabulary and <b>"Which sentence from the book shows that?"</b> evidence questions, with a <b>🔎 Look back</b> button.</li></ul>
+    <p><b>Levels:</b> a book is "just right" when about 80% of the questions are right on the first try and about 95% (Grade 2) or 90% (Grades 3–5) of the words are read correctly. Then the next level opens. After two hard books in a row, an easier book is suggested. She can always choose any book and re-read. Grown-ups → <b>📖 Gigi's Stories: reading level</b> shows the level, the last books, scores and reading speed.</p>`],
   ['Sight words and levels', `
     <p><b>Sight words:</b> every sight word she meets is tracked: <i>new → learning → known</i>. A word is <b>known</b> after she reads it <b>by herself</b> on 3 different days, then it comes back for review after 1, 3, 7, 14 and 30 days. Her learning and tricky words come back in the story warm-ups, the word game, the daily sight-word questions and the read-aloud sentences.</p>
     <p><b>Levels:</b> each skill has level 1–3. She moves up after <b>85%</b> or more right on the first try over her last 8–10 answers at that level, and back down below <b>60%</b>, so one lucky or unlucky answer never changes it.</p>

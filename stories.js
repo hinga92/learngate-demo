@@ -107,7 +107,7 @@ function trickyWords(n) { return Object.keys(P.words).filter(w => P.words[w].see
 function wordsFromRead(text, hit) { norm(text).forEach((w, k) => wordResult(w, hit[k] ? 'alone' : 'miss')); saveAll(); }
 
 // Same skill update as record(), for activities outside a quiz session.
-function skillResult(id, first) { const s = initLvl(sk(id)); levelStep(s, first); s.seen++; if (first) { s.correct++; s.streak++; s.box = Math.min(5, s.box + 1); P.stars++; } else { s.streak = 0; s.box = Math.max(0, s.box - 1); }
+function skillResult(id, first) { const s = initLvl(sk(id), id); levelStep(s, first, id); s.seen++; if (first) { s.correct++; s.streak++; s.box = Math.min(5, s.box + 1); P.stars++; } else { s.streak = 0; s.box = Math.max(0, s.box - 1); }
   s.last = Date.now(); s.hist = (s.hist || []).concat(first ? 1 : 0).slice(-20); }
 
 // ---------------------------------------------------------------------------
@@ -359,7 +359,7 @@ function progressExtras() {
     tricky: trickyWords(8).map(wordShow), practising: practiceWords(8).map(wordShow)};
   const books = GIGI_BOOKS.map((b, i) => ({t: b.title, s: bstate(b.id).stars, r: bstate(b.id).reads}));
   const next = GIGI_BOOKS.find((b, i) => storyUnlocked(i) && !bstate(b.id).reads);
-  const lv = Object.keys(SKILLS).filter(id => P.skills[id] && P.skills[id].seen).map(id => { const s = initLvl(sk(id)), h = (s.hist || []).slice(-10);
+  const lv = Object.keys(SKILLS).filter(id => P.skills[id] && P.skills[id].seen).map(id => { const s = initLvl(sk(id), id), h = (s.hist || []).slice(-10);
     return {k: SKILLS[id].label.split(' (')[0], l: s.lvl, a: h.length >= 5 ? Math.round(100 * h.reduce((x, y) => x + y, 0) / h.length) : null, d: s.lvlT > week ? s.lvlDir : 0}; });
   return {words, stories: {series: STORY_SERIES, books, next: next ? next.title : ''},
     levels: {changes: lv.filter(x => x.d).map(x => ({k: x.k, l: x.l, d: x.d})),
@@ -368,7 +368,7 @@ function progressExtras() {
 
 // Grown-ups: every practised skill with its level and how she's doing lately.
 function levelsCard() {
-  const rows = Object.keys(SKILLS).filter(id => P.skills[id] && P.skills[id].seen).map(id => { const s = initLvl(sk(id)), h = (s.hist || []).slice(-10);
+  const rows = Object.keys(SKILLS).filter(id => P.skills[id] && P.skills[id].seen).map(id => { const s = initLvl(sk(id), id), h = (s.hist || []).slice(-10);
     const acc = h.length ? Math.round(100 * h.reduce((a, b) => a + b, 0) / h.length) : null;
     const moved = s.lvlT && Date.now() - s.lvlT < 7 * 864e5 ? (s.lvlDir > 0 ? ' ⬆️' : ' ⬇️') : '';
     return {id, subj: SKILLS[id].subject, label: SKILLS[id].label.split(' (')[0], lvl: s.lvl, acc, moved}; });

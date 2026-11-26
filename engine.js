@@ -34,19 +34,32 @@ function numWrongs(ans, lo = 0, hi = 120) {
 }
 
 // ---------------- speech: turn screen text into something a voice reads naturally ----------------
-// Dashes, spelled-out letters, syllable hyphens, maths symbols, emoji and "…" confuse text-to-speech
-// (it says "dash", "minus", skips "−", or reads emoji names). Every Bridge.speak() goes through here.
+// Dashes, spelled-out letters, syllable hyphens, maths symbols (incl. Grades 3–5: × ÷ fractions powers remainders),
+// emoji and "…" confuse text-to-speech. Every Bridge.speak() goes through here.
+const FRAC_NAMES = {2: ['half', 'halves'], 3: ['third', 'thirds'], 4: ['fourth', 'fourths'], 5: ['fifth', 'fifths'], 6: ['sixth', 'sixths'], 8: ['eighth', 'eighths'], 10: ['tenth', 'tenths'], 12: ['twelfth', 'twelfths'], 100: ['hundredth', 'hundredths']};
+const fracWords = (n, d) => { const f = FRAC_NAMES[+d]; return f ? `${n} ${+n === 1 ? f[0] : f[1]}` : `${n} over ${d}`; };
 function speakable(t) {
   let s = String(t == null ? '' : t);
+  s = s.replace(/<sup>\s*(\d+)\s*<\/sup>/g, ' to the power of $1 ');                       // 10<sup>3</sup>
   s = s.replace(/<[^>]*>/g, ' ');                                                   // any HTML
-  s = s.replace(/[\p{Extended_Pictographic}\u{1F1E6}-\u{1F1FF}️‍⃣]/gu, ' ');   // emoji
+  s = s.replace(/[\p{Extended_Pictographic}\u{1F1E6}-\u{1F1FF}\u{FE0F}\u{200D}\u{20E3}]/gu, ' ');   // emoji
   s = s.replace(/[↔→←⇒➜]/g, ' ');                                                  // arrows
   s = s.replace(/_{2,}|▢/g, ' blank ');
   s = s.replace(/\b([A-Za-z])((?:\s*-\s*[A-Za-z]\b)+)/g, m => m.split(/\s*-\s*/).join(', '));   // p - i - g  ->  p, i, g
   s = s.replace(/\b[A-Za-z]+(?:-[A-Za-z]+){2,}\b/g, m => m.split('-').join(', '));          // kan-ga-roo -> kan, ga, roo
+  s = s.replace(/(Clap:\s*)([A-Za-z]+(?:-[A-Za-z]+)+)/g, (m, a, w) => a + w.split('-').join(', '))   // Clap: pen-cil -> pen, cil
+    .replace(/\b([A-Za-z]+(?:-[A-Za-z]+)+)(?=[\s,—–-]+\d+\s+claps?\b)/g, w => w.split('-').join(', '));   // pen-cil — 2 claps
+  s = s.replace(/\b(\d)-D\b/g, '$1 D');
+  s = s.replace(/(^|[\s(“"])([A-Za-z]{1,6})-(?=[\s,.!?)”"]|$)/g, '$1$2').replace(/(^|[\s(“"])-([A-Za-z]{1,6})\b/g, '$1$2');   // the prefix re- / the suffix -ful
+  s = s.replace(/~+/g, ' ');
+  s = s.replace(/(\d+)\s+(\d+)\/(\d+)\b/g, (m, w, n, d) => `${w} and ${fracWords(n, d)}`);     // 2 3/4 -> 2 and 3 fourths
+  s = s.replace(/(?<![\d/])(\d+)\/(\d+)\b/g, (m, n, d) => fracWords(n, d));                  // 3/4 -> 3 fourths
+  s = s.replace(/(\d)\s*R\s*(?=\d|\?|blank)/g, '$1 remainder ').replace(/\bR\s+blank\b/g, 'remainder blank');   // 7 R 2
+  s = s.replace(/(\d)\s*°/g, '$1 degrees').replace(/(\d)\s*¢/g, '$1 cents');
   s = s.replace(/(\d)\s*[−–-]\s*(?=\d)/g, '$1 minus ');                             // 11 − 8
   s = s.replace(/([+=−×÷]\s*)\?/g, '$1 what ').replace(/(^|[\s(:])\?(?=\s*[+=−×÷-])/g, '$1what ');   // the unknown in "2 + ? = 12"
-  s = s.replace(/\s*−\s*/g, ' minus ').replace(/\bwhat\s*-\s*(?=\d)/g, 'what minus ').replace(/\s*\+\s*/g, ' plus ').replace(/(\d)\s*[×x]\s*(?=\d)/g, '$1 times ').replace(/(\d)\s*÷\s*(?=\d)/g, '$1 divided by ');
+  s = s.replace(/\s*−\s*/g, ' minus ').replace(/\bwhat\s*-\s*(?=\d)/g, 'what minus ').replace(/\s*\+\s*/g, ' plus ').replace(/(\d|\))\s*[×x]\s*(?=\d|\(|what)/g, '$1 times ').replace(/(\d)\s*÷\s*(?=\d|what)/g, '$1 divided by ');
+  s = s.replace(/\s*×\s*/g, ' times ').replace(/\s*÷\s*/g, ' divided by ');
   s = s.replace(/(\d)\s*<\s*(?=\d)/g, '$1 is less than ').replace(/(\d)\s*>\s*(?=\d)/g, '$1 is greater than ');
   s = s.replace(/\s*=\s*/g, ' equals ').replace(/\s[<>]\s/g, ' ');
   s = s.replace(/\s*[—–]\s*/g, ', ').replace(/\s+-\s+/g, ', ');                    // dashes used as pauses
@@ -108,7 +121,7 @@ const Bridge = (() => {
 
 // ---------------- persistent state ----------------
 const DEFAULT_SETTINGS = {
-  childName: 'Ava', pin: '', questionsPerUnlock: 5, minutesPerUnlock: 20, dailyMaxMinutes: 90,
+  childName: 'Ava', grade: '1', classWords: [], pin: '', questionsPerUnlock: 5, minutesPerUnlock: 20, dailyMaxMinutes: 90,
   bedtimeStart: '20:00', bedtimeEnd: '07:00', readAloud: true, readQuestions: true, volumeCapPct: 80, helpName: 'Dad', helpPhone: '', helpWhatsApp: true, alwaysWhatsApp: false, faceTimeId: '', faceTimeVideo: true,
   subjects: {math: true, reading: true, writing: true, science: true, art: true, social: true}
 };
@@ -128,22 +141,31 @@ S.subjects = Object.assign({}, DEFAULT_SETTINGS.subjects, S.subjects || {});
 if (!(S.volumeCapPct >= 10 && S.volumeCapPct <= 100)) S.volumeCapPct = 80;
 if (/^\d{4}$/.test(S.pin || '')) { S.pin = makePin(S.pin); Bridge.save('settings', S); }   // upgrade an old plain-text PIN
 if (!S.pinLock) S.pinLock = {fails: 0, until: 0};
+if (!['K', '1', '2', '3', '4', '5'].includes(S.grade)) S.grade = '1';
+if (!Array.isArray(S.classWords)) S.classWords = [];
+buildSight(S.grade, S.classWords);
 let P = Bridge.load('progress') || {skills: {}, sessions: [], stars: 0, usage: {}, sessionCount: 0};
 const saveAll = () => { Bridge.save('settings', S); Bridge.save('progress', P); Bridge.config({minutesPerUnlock: S.minutesPerUnlock, bedtimeStart: S.bedtimeStart, bedtimeEnd: S.bedtimeEnd, syncUrl: S.syncUrl || '', syncKey: S.syncKey || '', deviceRole: S.deviceRole || 'child', deviceName: S.deviceName || (typeof defaultDeviceName === 'function' ? defaultDeviceName() : '')}); };
 const sk = id => (P.skills[id] = P.skills[id] || {seen: 0, correct: 0, box: 0, streak: 0, last: 0, hist: []});
 // Levels 1–3 per skill. She moves up after 85%+ right on the first try over her last 8–10 answers at
 // that level, and back down below 60%, so a single lucky (or unlucky) answer never changes her level.
 const boxLevel = b => b < 2 ? 1 : b < 4 ? 2 : 3;
-const initLvl = s => { if (!s.lvl) { s.lvl = boxLevel(s.box); s.recent = (s.hist || []).slice(-10); } return s; };
+// Grades: K = 0 … Grade 5 = 5. Every skill has g: [first grade, last grade] and base: the grade its level 1 is written for.
+const GRADE_LIST = ['K', '1', '2', '3', '4', '5'];
+const gradeNum = () => Math.max(0, GRADE_LIST.indexOf(S.grade));
+const skillRange = id => (SKILLS[id] && SKILLS[id].g) || [0, 2];
+// Starting level for a new skill: one level up for each grade above the grade it was written for (1–3).
+const gradeStartLevel = id => { const base = (SKILLS[id] && SKILLS[id].base != null) ? SKILLS[id].base : 1; return Math.max(1, Math.min(3, 1 + gradeNum() - base)); };
+const initLvl = (s, id) => { if (!s.lvl) { s.lvl = Math.max(boxLevel(s.box), gradeStartLevel(id)); s.recent = (s.hist || []).slice(-10); } return s; };
 const recentAcc = s => { const r = s.recent || []; return r.length ? r.reduce((a, b) => a + b, 0) / r.length : null; };
-function levelStep(s, first) {
-  initLvl(s); s.recent = (s.recent || []).concat(first ? 1 : 0).slice(-10);
+function levelStep(s, first, id) {
+  initLvl(s, id); s.recent = (s.recent || []).concat(first ? 1 : 0).slice(-10);
   if (s.recent.length < 8) return;
   const acc = recentAcc(s);
   if (acc >= 0.85 && s.lvl < 3) { s.lvl++; s.recent = []; s.lvlT = Date.now(); s.lvlDir = 1; }
   else if (acc < 0.6 && s.lvl > 1) { s.lvl--; s.recent = []; s.lvlT = Date.now(); s.lvlDir = -1; }
 }
-const level = id => { if (typeof session !== 'undefined' && session && session.challenge) return session.challenge.difficulty; return initLvl(sk(id)).lvl; };
+const level = id => { if (typeof session !== 'undefined' && session && session.challenge) return session.challenge.difficulty; return initLvl(sk(id), id).lvl; };
 
 // ---------------- visuals ----------------
 function tenFrame(n, crossed = 0, color = '#F2994A') {
@@ -344,7 +366,9 @@ G.a_pattern = () => { const sets = [['🔴', '🔵', '🟡'], ['⭐', '🌙', '�
     hint: 'Say the pattern out loud and find the part that repeats.', bigChoices: true}; };
 
 // ---------------- adaptive selection ----------------
-function enabledSkills(subject) { return Object.keys(SKILLS).filter(id => SKILLS[id].subject === subject && S.subjects[subject] && (id !== 'r_aloud' || (S.readAloud && Bridge.canListen()))); }
+// Only the skills meant for her grade (curriculum.js sets each skill's grade range).
+const gradeOk = id => { const [a, b] = skillRange(id), n = gradeNum(); return n >= a && n <= b; };
+function enabledSkills(subject) { return Object.keys(SKILLS).filter(id => SKILLS[id].subject === subject && S.subjects[subject] && gradeOk(id) && (id !== 'r_aloud' || (S.readAloud && Bridge.canListen()))); }
 function priority(id) { const s = sk(id); const base = SKILLS[id].weight;
   const h = (s.hist || []).slice(-10), acc = h.length >= 3 ? h.reduce((a, b) => a + b, 0) / h.length : s.seen ? s.correct / s.seen : 0.5;   // how she is doing lately
   let boost = 1; if (id === 'r_sight' && typeof practiceWords === 'function') boost += Math.min(1, practiceWords(10).length / 8);    // sight words she is learning pull this skill in
@@ -359,7 +383,7 @@ function planSession(n) {
     let subj = slots[i % slots.length]; if (subj === 'ROT') subj = rotate[(sc + i) % rotate.length];
     if (subj === 'reading' && S.readAloud && Bridge.canListen() && sc % 2 === 0 && !used.has('r_aloud') && S.subjects.reading) { out.push('r_aloud'); used.add('r_aloud'); continue; }
     let ids = enabledSkills(subj).filter(id => id !== 'r_aloud');
-    if (!ids.length) ids = Object.keys(SKILLS).filter(id => S.subjects[SKILLS[id].subject] && id !== 'r_aloud');
+    if (!ids.length) ids = Object.keys(SKILLS).filter(id => S.subjects[SKILLS[id].subject] && gradeOk(id) && id !== 'r_aloud');
     if (!ids.length) ids = ['m_add10'];
     const id = weightedPick(ids, used); used.add(id); out.push(id);
   }
@@ -421,7 +445,7 @@ function renderQuestion(it) {
       b.innerHTML = it.choiceHTML ? it.choiceHTML[i] : esc(c); b.onclick = () => { if (it.speakChoices && Date.now() > (session.qSpeakUntil || 0)) Bridge.speak(c); answer(c, b); }; A.appendChild(b); });
   } else if (it.type === 'number') {
     A.innerHTML = `<div class="numdisp" id="numdisp">&nbsp;</div><div class="pad">${[1,2,3,4,5,6,7,8,9].map(d => `<button data-d="${d}">${d}</button>`).join('')}<button data-d="del" class="del">⌫</button><button data-d="0">0</button><button data-d="ok" class="ok">✔</button></div>`;
-    let v = ''; A.querySelectorAll('.pad button').forEach(b => b.onclick = () => { const d = b.dataset.d; if (d === 'del') v = v.slice(0, -1); else if (d === 'ok') { if (v) answer(v, b); return; } else if (v.length < 3) v += d; $('#numdisp').innerHTML = v || '&nbsp;'; session.numReset = () => { v = ''; if ($('#numdisp')) $('#numdisp').innerHTML = '&nbsp;'; }; });
+    let v = ''; A.querySelectorAll('.pad button').forEach(b => b.onclick = () => { const d = b.dataset.d; if (d === 'del') v = v.slice(0, -1); else if (d === 'ok') { if (v) answer(v, b); return; } else if (v.length < (it.maxLen || 3)) v += d; $('#numdisp').innerHTML = v || '&nbsp;'; session.numReset = () => { v = ''; if ($('#numdisp')) $('#numdisp').innerHTML = '&nbsp;'; }; });
   } else if (it.type === 'tiles') {
     A.innerHTML = `<div class="slots" id="slots"></div><div class="tiles" id="tiles"></div><div class="row"><button class="small-btn" id="tclear">↺ Clear</button><button class="small-btn ok" id="tok">✔ Check</button></div>`;
     const placed = []; const drawT = () => {
@@ -463,8 +487,8 @@ function answer(val, btn) {
     }
   }
 }
-function record(id, first) { const s = initLvl(sk(id));
-  if (!session.challenge || session.challenge.difficulty === s.lvl) levelStep(s, first);   // challenge questions at another level don't move her daily level
+function record(id, first) { const s = initLvl(sk(id), id);
+  if (!session.challenge || session.challenge.difficulty === s.lvl) levelStep(s, first, id);   // challenge questions at another level don't move her daily level
   s.seen++; if (first) { s.correct++; s.streak++; s.box = Math.min(5, s.box + 1); } else { s.streak = 0; s.box = Math.max(0, s.box - 1); }
   s.last = Date.now(); s.hist = (s.hist || []).concat(first ? 1 : 0).slice(-20); session.results.push({skill: id, first}); if (first) { session.firstTry++; P.stars++; } saveAll(); }
 
@@ -571,7 +595,7 @@ function renderParent(firstRun) {
     ['brightness', 'Allow changing screen brightness', st.writeSettingsOk]
   ] : [];
   const bySubj = {}; Object.keys(SKILLS).forEach(id => { (bySubj[SKILLS[id].subject] = bySubj[SKILLS[id].subject] || []).push(id); });
-  const skillRows = subj.map(s => `<tr class="sh"><td colspan="4">${SUBJECT_INFO[s].icon} ${SUBJECT_INFO[s].name}</td></tr>` + (bySubj[s] || []).map(id => { const x = sk(id); const recent = (x.hist || []); const ra = recent.length ? Math.round(100 * recent.reduce((a, b) => a + b, 0) / recent.length) : null;
+  const skillRows = subj.map(s => `<tr class="sh"><td colspan="4">${SUBJECT_INFO[s].icon} ${SUBJECT_INFO[s].name}</td></tr>` + (bySubj[s] || []).filter(gradeOk).map(id => { const x = sk(id); const recent = (x.hist || []); const ra = recent.length ? Math.round(100 * recent.reduce((a, b) => a + b, 0) / recent.length) : null;
     return `<tr><td>${SKILLS[id].label}<small> ${SKILLS[id].std}</small></td><td>${x.seen}</td><td>${ra === null ? '–' : ra + '%'}</td><td>${'★'.repeat(x.box)}${'☆'.repeat(5 - x.box)}</td></tr>`; }).join('')).join('');
   const last7 = {}; P.sessions.forEach(s => { if (Date.now() - s.t < 7 * 864e5) { const e = last7[s.date] = last7[s.date] || {n: 0, ok: 0, q: 0, mins: 0, dur: 0}; e.n++; e.q += s.n; e.ok += s.ok; e.mins += s.mins; e.dur += s.dur; } });
   const weak = Object.keys(SKILLS).filter(id => sk(id).seen >= 3).sort((a, b) => (sk(a).correct / sk(a).seen) - (sk(b).correct / sk(b).seen)).slice(0, 5);
