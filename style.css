@@ -322,3 +322,14 @@ body.night,body.night #bedtime{background:#141a3a;color:#e8e4ff}
 .bg-sea{background:linear-gradient(#bfe6ff,#e9f7ff)}.bg-desert{background:linear-gradient(#ffe9c7,#f7d6a0)}.bg-forest{background:linear-gradient(#d4f0d0,#a9d8a0)}
 .bg-space{background:linear-gradient(#2d2a5a,#5b4fa0);color:#fff}.bg-snow{background:linear-gradient(#eef6ff,#ffffff)}.bg-city{background:linear-gradient(#e6e6f2,#cfd6e6)}.bg-night{background:linear-gradient(#3a3570,#6b5fb0);color:#fff}
 .lvhead{font-size:28px;color:#5B3FA0}
+/* 12-week plan, phase checks, paper homework (plan.js) */
+.pcbody{max-width:900px;margin:0 auto;padding:10px 14px 40px;width:100%;box-sizing:border-box}
+.pcrow{display:flex;gap:10px;align-items:center;justify-content:space-between;padding:10px 0;border-top:1px solid #f1e8d8;flex-wrap:wrap}
+.pcres{display:flex;gap:8px;align-items:center}
+.pill.okp{background:#d9f4e3}.pill.nyp{background:#fff3cf}
+.pcbig{text-align:center}.pcword{font-size:84px;font-weight:700;margin:20px 0;color:#3b2a00}.pcword.sent{font-size:40px;line-height:1.4}
+.pcsum{font-size:20px;margin-top:12px}
+.hwform{display:flex;flex-wrap:wrap;gap:8px;align-items:flex-end}.hwform label{flex:1 1 140px}.hwform input[type=number]{max-width:90px}
+#planCard .pill,.pcbody .pill{display:inline-block;padding:3px 11px;border-radius:999px;background:#f1e8d8;font-size:16px;margin:3px 2px 0 0}
+#planCard .pill.okp,.pcbody .pill.okp{background:#d9f4e3}.pcbody .pill.nyp{background:#fff3cf}
+.hwform label{display:flex;flex-direction:column;gap:4px;font-size:15px}.hwform select,.hwform input{width:100%;box-sizing:border-box}

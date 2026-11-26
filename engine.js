@@ -329,7 +329,8 @@ G.r_silente = () => { const [w, e, wrong] = pick(SILENT_E); return {type: 'choic
   hint: 'Magic e at the end makes the vowel say its name!', noSpeakAnswer: true}; };
 G.r_sight = () => { const L = level('r_sight'); const list = SIGHT.slice(0, L).flat();
   const mine = typeof practiceWords === 'function' ? practiceWords(6).filter(x => x.length > 1) : [];   // her own learning / due-for-review words
-  const w = mine.length && Math.random() < 0.6 ? pick(mine) : pick(L === 1 ? SIGHT[0] : SIGHT[L - 1]); const wr = shuffle(list.filter(x => x !== w && x[0] === w[0])).concat(shuffle(list)).filter(x => x !== w);
+  const wk = typeof planWords === 'function' ? planWords() : [];   // this week's words from the 12-week plan
+  const w = wk.length && Math.random() < 0.45 ? pick(wk) : mine.length && Math.random() < 0.6 ? pick(mine) : pick(L === 1 ? SIGHT[0] : SIGHT[L - 1]); const wr = shuffle(list.filter(x => x !== w && x[0] === w[0])).concat(shuffle(list)).filter(x => x !== w);
   const opts = choicesFrom(w, wr.slice(0, 6), 4);
   return {type: 'choice', prompt: 'Listen 🔊 and tap the word.', say: `Find the word: ${w}.`, choices: opts, answer: w, hint: `Listen again: ${w}`, noSpeakAnswer: true, wordChoices: true}; };
 G.r_vocab = () => { if (Math.random() < .55) { const o = pick(OPPOSITES); const flip = Math.random() < .5; const w = flip ? o[1] : o[0], ans = flip ? o[0] : o[1]; const wr = OPPOSITES.filter(x => x !== o).flatMap(x => [x[0], x[1]]);

@@ -1,6 +1,6 @@
 /* In-app User guide + About (Grown-ups area). */
 'use strict';
-const APP_VERSION = '3.1';
+const APP_VERSION = '3.2';
 const APP_DATE = 'November 2026';
 const APP_DEVELOPER = 'the Learning Gate team';
 const MASCOT = () => (typeof S !== 'undefined' && S.mascotName) || 'Gigi';
@@ -37,13 +37,22 @@ const GUIDE = [
     <li><b>From the iPhone dashboard:</b> Remote control → <b>📚 +30 / +60 min to earn</b> (asks your PIN).</li></ul>
     <p>She sees "Dad says you can keep learning!", <b>Let's learn</b> comes back, and questions or <b>I read a book</b> earn play again until the extra minutes are used. Today only; rest time still applies. Sending it to both devices does not double it. (<b>🎁 +15 / +30 min play</b> on the dashboard still gives play time without learning.)</p>`],
   ["Gigi's Stories (sight-word books)", `
-    <p><b>📖 Gigi's Stories</b> (home screen) is a series of short books, <i>Gigi's Adventures</i>, with simple animations. Each book adds 2–4 new sight words from the class teacher's list and the Dolch lists.</p>
+    <p><b>📖 Gigi's Stories</b> (home screen) is a series of 12 short books, <i>Gigi's Adventures</i>, with simple animations. Each book adds 2–4 new sight words from the class teacher's list and the Dolch lists. Since 3.2, books 7–12 follow the 12-week plan: sh, ch, th and wh, short sentences and capitals (books 7–10), then magic e and story questions (books 11–12).</p>
     <ol><li><b>Warm-up:</b> she taps the new words (and up to 3 of her own learning words) to hear them.</li>
     <li><b>Read with Gigi:</b> on each page Gigi reads first while the words light up, then Ava repeats it into the microphone. Words turn green as she reads. She can tap any word to hear it. After 3 tries she always moves on.</li>
     <li><b>After the book:</b> two story questions and a "find the word" game.</li></ol>
     <ul><li>The first time she finishes a book she wins a trophy (counts toward treats). The next book opens when she reads about 85% of the words right on her first try, or after two reads.</li>
-    <li><b>⭐ Read by myself</b> (after the first read): she reads first and can tap <b>Help me</b>. A good solo read earns the third star.</li>
+    <li><b>⭐ Read by myself</b> (after the first read): she reads first and can tap <b>Help me</b>. A good solo read earns the third star. Re-reads matter: a sight word counts as <b>known</b> only after she reads it by herself on 3 different days.</li>
     <li>Stories never unlock play time. Like challenges, they rest at bedtime unless "Allow challenges during rest time" is on.</li></ul>`],
+  ['🗓️ 12-week plan, phase checks and paper homework (since 3.2)', `
+    <p>Her 12-week study plan (Nov 23, 2026 – Feb 14, 2027) is in the app: Grown-ups → <b>🗓️ 12-week plan</b>.</p>
+    <ul><li><b>Daily questions:</b> her report-card weights still come first. On top of that, this week's plan skills come up about twice as often, and the day's focus a little more (Mon phonics + sight words, Tue equations, Wed reading aloud, Thu make a ten + spelling, Fri writing).</li>
+    <li><b>Sight words:</b> this week's words (and earlier words of the same phase she doesn't know yet) come up more in the sight-word questions. The card shows them, with ⭐ on words she knows.</li>
+    <li><b>Repeat a week:</b> if a phase check isn't passed, tap <b>↩ Repeat last week</b>. The plan then runs one week behind the calendar. <b>↪ Back one repeat</b> undoes it. Untick "Follow the 12-week plan" to turn it off.</li>
+    <li><b>🎯 Phase checks</b> (end of weeks 4, 8 and 12): open Phase 1, 2 or 3 and do the parts in any order. Tablet parts (adding within 10 in under 5 seconds, ending sounds, clapping, missing numbers, shapes, telling time) are checked by the app. For sight words and sentences she reads aloud and you tap ✅ or 🌱. For writing, retelling and explaining you decide. About 8 out of 10 on each part passes.</li>
+    <li><b>📝 Paper homework:</b> after checking a worksheet, pick the skill (this week's skills have a ⭐), enter how many were right out of how many, and add a note. The card shows each skill's paper score. Under 70% (🎯) gives that skill a little more practice in the app.</li>
+    <li>Homework scores and check results also appear on your phone dashboard (<b>📝 Paper homework &amp; plan checks</b>) and in the Sunday email.</li>
+    <li>The plan is written for Grade 1, so it pauses if another grade is chosen.</li></ul>`],
   ['🎒 Grades (since 3.1)', `
     <ul><li><b>Kindergarten:</b> counting to 20, more and fewer, teen numbers, adding and taking away within 5, making 10, flat and solid shapes; letter sounds, rhymes, syllables, first sight words; science, social studies, arts and health questions for K.</li>
     <li><b>Grade 1:</b> adding and subtracting within 20, place value, time, shapes; phonics (short vowels, digraphs, magic e), sight words, story questions, building sentences.</li>

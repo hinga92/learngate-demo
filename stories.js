@@ -59,7 +59,56 @@ const GIGI_BOOKS = [
     {text: 'Mom has a gift for Gigi.', scene: [['🐔', 'bob', 30, 110], ['🎁', 'shake', 65, 100]]},
     {text: 'Can we have more cake?', scene: [['🐥', 'bob', 30, 100], ['🍰', 'pop', 58, 80], ['🍰', 'pop', 75, 80]]},
     {text: 'I will be big! This is fun!', scene: [['🐥', 'grow', 45, 130], ['🎉', 'pop', 15, 70], ['🎉', 'pop', 80, 70]]}],
-   quiz: [['What did Gigi get to eat?', 'cake', ['soup', 'corn'], ['🎂', '🥣', '🌽']], ['What did Mom give Gigi?', 'a gift', ['a hat', 'a ball'], ['🎁', '🎩', '⚽']]]}
+   quiz: [['What did Gigi get to eat?', 'cake', ['soup', 'corn'], ['🎂', '🥣', '🌽']], ['What did Mom give Gigi?', 'a gift', ['a hat', 'a ball'], ['🎁', '🎩', '⚽']]]},
+
+  // Books 7–12 follow the 12-week plan: Phase 2 (sh, ch, th, wh, short sentences, capitals) and Phase 3 (magic e, story questions).
+  {id: 'g7', title: 'The Fish Shop', cover: '🐟', bg: 'sea', newWords: ['came', 'did', 'eat', 'ate'], pages: [
+    {text: 'Gigi came to the fish shop.', scene: [['🐥', 'run', 20, 100], ['🏪', 'pop', 70, 130]]},
+    {text: 'She did see a red fish in a dish.', scene: [['🐥', 'bob', 25, 90], ['🐟', 'sway', 62, 90], ['🥣', '', 62, 70]]},
+    {text: 'A chick sat at the shop for lunch.', scene: [['🐤', 'hop', 45, 110], ['🍽️', 'pop', 72, 70]]},
+    {text: 'Did the chick eat the fish? No!', scene: [['🐤', 'shake', 35, 100], ['🐟', 'hop', 68, 80], ['❌', 'pop', 50, 50]]},
+    {text: 'The chick ate a chip. Munch, munch!', scene: [['🐤', 'bob', 35, 100], ['🍟', 'shake', 65, 90]]}],
+   quiz: [['Where did Gigi go?', 'the fish shop', ['the park', 'the bed'], ['🏪', '🌳', '🛏️']], ['What did the chick eat?', 'a chip', ['the fish', 'a cake'], ['🍟', '🐟', '🎂']]]},
+
+  {id: 'g8', title: 'A Whale in the Bath', cover: '🐳', bg: 'sky', newWords: ['have', 'new', 'now', 'good'], pages: [
+    {text: 'Gigi has a new bath toy.', scene: [['🐥', 'bob', 30, 100], ['🎁', 'shake', 68, 90]]},
+    {text: 'What is in the bath? A whale!', scene: [['🛁', '', 45, 150], ['🐳', 'pop', 45, 80]]},
+    {text: 'The whale can splash. Splash, splash!', scene: [['🐳', 'hop', 45, 100], ['💦', 'pop', 20, 60], ['💦', 'pop', 72, 60]]},
+    {text: 'Now Gigi has three ducks in the bath.', scene: [['🦆', 'bob', 20, 70], ['🦆', 'bob', 45, 70], ['🦆', 'bob', 70, 70]]},
+    {text: 'We have a good bath. Thank you, whale!', scene: [['🐥', 'hop', 30, 100], ['🐳', 'sway', 65, 100], ['🫧', 'rise', 48, 60]]}],
+   quiz: [['What was in the bath?', 'a whale', ['a cat', 'a bus'], ['🐳', '🐱', '🚌']], ['How many ducks were in the bath?', '3', ['5', '1'], ['3️⃣', '5️⃣', '1️⃣']]]},
+
+  {id: 'g9', title: 'Gigi Can Ride', cover: '🛷', bg: 'snow', newWords: ['saw', 'ride', 'please', 'soon'], pages: [
+    {text: 'Gigi saw a red sled.', scene: [['🐥', 'bob', 25, 100], ['🛷', 'pop', 65, 110]]},
+    {text: '"Can I ride, please?" said Gigi.', scene: [['🐥', 'hop', 30, 100], ['🙏', 'pop', 60, 70]]},
+    {text: 'She ran up the hill with the sled.', scene: [['🐥', 'run', 20, 90], ['⛰️', '', 65, 150]]},
+    {text: 'Zip! Down she went. Wheee!', scene: [['🛷', 'run', 15, 110], ['❄️', 'fall', 60, 50], ['❄️', 'fall', 80, 50]]},
+    {text: 'Soon Gigi was cold. Time to go in!', scene: [['🐥', 'shake', 35, 100], ['🏠', 'pop', 70, 120]]}],
+   quiz: [['What did Gigi ride?', 'a sled', ['a bus', 'a horse'], ['🛷', '🚌', '🐴']], ['What did Gigi say?', 'Can I ride, please?', ['Go away!', 'Good night!'], ['🙏', '🙅', '🌙']]]},
+
+  {id: 'g10', title: 'Who Is Under the Bed?', cover: '🛏️', bg: 'night', newWords: ['who', 'under', 'was', 'what'], pages: [
+    {text: 'Who is under the bed?', scene: [['🛏️', '', 45, 150], ['❓', 'shake', 75, 70]]},
+    {text: 'Is it a cat? No, it is not.', scene: [['🐱', 'bob', 35, 90], ['❌', 'pop', 65, 60]]},
+    {text: 'What was that? It was a thump!', scene: [['💥', 'shake', 45, 90], ['🐥', 'hop', 75, 90]]},
+    {text: 'Gigi will look. She can see a pup!', scene: [['🐥', 'bob', 25, 90], ['🐶', 'pop', 62, 110]]},
+    {text: 'The pup wants to play with Gigi. Yes!', scene: [['🐶', 'hop', 30, 100], ['🐥', 'hop', 62, 90], ['🎾', 'spin', 85, 50]]}],
+   quiz: [['Where was the pup?', 'under the bed', ['in the tub', 'on the bus'], ['🛏️', '🛁', '🚌']], ['Who was under the bed?', 'a pup', ['a cat', 'a fish'], ['🐶', '🐱', '🐟']]]},
+
+  {id: 'g11', title: 'Gigi Bakes a Cake', cover: '🧁', bg: 'party', newWords: ['could', 'after', 'every', 'by'], pages: [
+    {text: 'Gigi and Mom bake a cake.', scene: [['🐥', 'bob', 25, 90], ['🐔', 'bob', 50, 110], ['🥣', 'shake', 78, 80]]},
+    {text: 'They add five eggs. Crack, crack!', scene: [['🥚', 'shake', 20, 60], ['🥚', 'shake', 35, 60], ['🥚', 'shake', 50, 60], ['🥚', 'shake', 65, 60], ['🥚', 'shake', 80, 60]]},
+    {text: 'Could Gigi lick the cake? Not yet!', scene: [['🐥', 'hop', 35, 100], ['🎂', 'pop', 68, 110]]},
+    {text: 'After a time, the cake is done. It is fine!', scene: [['⏰', 'shake', 25, 80], ['🎂', 'grow', 62, 120]]},
+    {text: 'Every pal gets a big bite. Yum!', scene: [['🐶', 'bob', 15, 70], ['🐱', 'bob', 38, 70], ['🐥', 'hop', 62, 80], ['🍰', 'pop', 85, 70]]}],
+   quiz: [['What did Gigi and Mom bake?', 'a cake', ['a pie', 'bread'], ['🎂', '🥧', '🍞']], ['How many eggs did they add?', '5', ['2', '9'], ['5️⃣', '2️⃣', '9️⃣']]]},
+
+  {id: 'g12', title: 'Gigi Goes Home', cover: '🏡', bg: 'park', newWords: ['going', 'from', 'give', 'how'], pages: [
+    {text: 'Gigi is going home from the farm.', scene: [['🐥', 'run', 15, 90], ['🏡', '', 75, 120]]},
+    {text: 'On the way, she sees a dog with a bone.', scene: [['🐥', 'bob', 25, 90], ['🐶', 'bob', 58, 110], ['🦴', 'spin', 82, 60]]},
+    {text: 'The dog is cute. Gigi gives him a rose.', scene: [['🐶', 'hop', 35, 110], ['🌹', 'pop', 65, 70]]},
+    {text: '"How can I get home?" said Gigi. The dog will help!', scene: [['🐥', 'shake', 30, 90], ['🐶', 'run', 65, 100]]},
+    {text: 'Gigi is home at last. She hums a happy tune.', scene: [['🐥', 'hop', 40, 110], ['🎵', 'rise', 65, 60], ['🏡', '', 82, 100]]}],
+   quiz: [['Who helped Gigi get home?', 'a dog', ['a hen', 'a fish'], ['🐶', '🐔', '🐟']], ['What did the dog have?', 'a bone', ['a ball', 'a hat'], ['🦴', '⚽', '🎩']]]}
 ];
 
 // ---------------------------------------------------------------------------
