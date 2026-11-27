@@ -1,6 +1,6 @@
 /* In-app User guide + About (Grown-ups area). */
 'use strict';
-const APP_VERSION = '3.4.1';
+const APP_VERSION = '3.4.2';
 const APP_DATE = 'November 2026';
 const APP_DEVELOPER = 'the Learning Gate team';
 const MASCOT = () => (typeof S !== 'undefined' && S.mascotName) || 'Gigi';
@@ -109,7 +109,7 @@ const GUIDE = [
     <li>In WhatsApp she taps the 🎥 video button.</li>
     <li>She shares her screen. Tablet: Share screen → <b>Entire screen</b> → Start now. iPad: Share screen → Start Broadcast.</li>
     <li>She presses Home to come back; the call keeps going.</li></ol>
-    <ul><li><b>Fixed in 3.4.1:</b> on the tablet, WhatsApp no longer snaps back to Learning Gate when she starts a study call or a 🆘 Help WhatsApp call while it's locked.</li>
+    <ul><li><b>Fixed in 3.4.1–3.4.2:</b> on the tablet, WhatsApp no longer snaps back to Learning Gate when she starts a study call or a 🆘 Help WhatsApp call while it's locked, even if the screen turns off and on during the call.</li>
     <li>Calls are never cut off by the lock. The study call closes itself 2 minutes after the call ends. Games stay locked.</li>
     <li>iPad: turn off Guided Access first. On her WhatsApp: Privacy → Calls → <b>Silence unknown callers</b>.</li></ul>`],
   ["Dad's iPhone dashboard and remote control", `
